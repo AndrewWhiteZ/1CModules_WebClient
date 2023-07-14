@@ -6,3 +6,22 @@ header {
     padding: 0;
     height: 100vh;
 }
+
+div .opened {
+    width: 280px;
+    display: block;
+}
+
+div .closed {
+    display: none;
+}
+
+aside .closed {
+    background-color: lavender;
+    transition: 0.3s;
+}
+
+aside .opened {
+    background-color: lavender;
+    transition: 0.3s;
+}

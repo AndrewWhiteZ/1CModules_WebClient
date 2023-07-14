@@ -1,0 +1,152 @@
+
+    <!-- <div class="modal-body">
+        <mdb-form-control class="mb-4">
+            <input mdbInput mdbValidate type="text" id="form1" class="form-control" formControlName="login" required/>
+            <label mdbLabel class="form-label" for="form1">Логин</label>
+            <mdb-success *ngIf="login?.valid && (login?.dirty || login?.touched)">
+                Looks good!
+            </mdb-success>
+            <mdb-error *ngIf="login?.invalid && (login?.dirty || login?.touched)">
+                Login is required!
+            </mdb-error>
+        </mdb-form-control>
+        <mdb-form-control class="mb-4" *ngIf="formType == 1">
+            <input mdbInput mdbValidate type="email" id="form2" class="form-control" formControlName="email"/>
+            <label mdbLabel class="form-label" for="form2">Email</label>
+            <mdb-success *ngIf="email?.valid && (email?.dirty || email?.touched)">
+                Looks good!
+            </mdb-success>
+            <mdb-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                Email is required!
+            </mdb-error>
+        </mdb-form-control>
+        <mdb-form-control class="mb-3">
+            <input mdbInput mdbValidate type="password" id="form3" class="form-control" formControlName="password" required/>
+            <label mdbLabel class="form-label" for="form3">Пароль</label>
+            <mdb-success *ngIf="password?.valid && (password?.dirty || password?.touched)">
+                Looks good!
+            </mdb-success>
+            <mdb-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                Password is required!
+            </mdb-error>
+        </mdb-form-control>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.close()">
+            Закрыть
+        </button>
+        <button type="button" class="btn btn-primary" (click)="mainButtonOnClick()">
+            {{ mainButtonText }}
+        </button>
+    </div>
+</form> -->
+
+<form [formGroup]="validationForm" (ngSubmit)="submitForm()">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modalRef.close()"
+        ></button>
+    </div>
+    <div class="modal-body">
+        <mdb-tabs [fill]="true" [justified]="true">
+            <mdb-tab title="Авторизация">
+                <div class="modal-body">
+
+                    <!-- Login input -->
+                    <mdb-form-control class="mb-4">
+                        <input mdbInput type="text" id="loginNameAuth" class="form-control" formControlName="login"/>
+                        <label mdbLabel class="form-label" for="loginNameAuth">Логин</label>
+                        <!-- <mdb-success *ngIf="login?.valid && (login?.dirty || login?.touched)">
+                            Looks good!
+                        </mdb-success>
+                        <mdb-error *ngIf="login?.invalid && (login?.dirty || login?.touched)">
+                            Login is required!
+                        </mdb-error> -->
+                    </mdb-form-control>
+
+                    <!-- Password input -->
+                    <mdb-form-control class="mb-4">
+                        <input mdbInput type="password" id="loginPasswordAuth" class="form-control" formControlName="password"/>
+                        <label mdbLabel class="form-label" for="loginPasswordAuth">Пароль</label>
+                        <!-- <mdb-success *ngIf="password?.valid && (password?.dirty || password?.touched)">
+                            Looks good!
+                        </mdb-success>
+                        <mdb-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                            Password is required!
+                        </mdb-error> -->
+                    </mdb-form-control>
+
+                    <!-- Submit button -->
+                    <button mdbRipple type="submit" class="btn btn-primary btn-block mb-4">
+                        Войти
+                    </button>
+                </div> 
+            </mdb-tab>
+            <mdb-tab title="Регистрация">
+                <div class="modal-body">
+
+                    <!-- Login input -->
+                    <mdb-form-control class="mb-4">
+                        <input mdbInput type="text" id="loginNameReg" class="form-control" formControlName="login"/>
+                        <label mdbLabel class="form-label" for="loginNameReg">Логин</label>
+                        <!-- <mdb-success *ngIf="login?.valid && (login?.dirty || login?.touched)">
+                            Looks good!
+                        </mdb-success>
+                        <mdb-error *ngIf="login?.invalid && (login?.dirty || login?.touched)">
+                            Login is required!
+                        </mdb-error> -->
+                    </mdb-form-control>
+                
+                    <!-- Email input -->
+                    <mdb-form-control class="mb-4">
+                        <input mdbInput type="email" id="registerEmailReg" class="form-control" formControlName="email"/>
+                        <label mdbLabel class="form-label" for="registerEmailReg">Email</label>
+                        <!-- <mdb-success *ngIf="email?.valid && (email?.dirty || email?.touched)">
+                            Looks good!
+                        </mdb-success>
+                        <mdb-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                            Email is required!
+                        </mdb-error> -->
+                    </mdb-form-control>
+                
+                    <!-- Password input -->
+                    <mdb-form-control class="mb-4">
+                        <input mdbInput type="password" id="loginPasswordReg" class="form-control" formControlName="password"/>
+                        <label mdbLabel class="form-label" for="loginPasswordReg">Пароль</label>
+                        <!-- <mdb-success *ngIf="password?.valid && (password?.dirty || password?.touched)">
+                            Looks good!
+                        </mdb-success>
+                        <mdb-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                            Password is required!
+                        </mdb-error> -->
+                    </mdb-form-control>
+            
+                    <!-- Checkbox -->
+                    <div class="form-check d-flex justify-content-center mb-4">
+                        <input
+                        mdbCheckbox
+                        class="form-check-input me-2"
+                        type="checkbox"
+                        value=""
+                        id="registerCheck"
+                        [checked]="true"
+                        aria-label="registerCheckHelpText"
+                        />
+                        <label class="form-check-label" for="registerCheck">
+                        I have read and agree to the terms
+                        </label>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button mdbRipple type="submit" class="btn btn-primary btn-block mb-3">
+                        Зарегистрироваться
+                    </button>
+                </div>
+            </mdb-tab>
+        </mdb-tabs>
+    </div>
+</form>

@@ -1,9 +1,20 @@
 <div class="container-fluid flex-column hv-100">
   <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-1 border-bottom">
     <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-      <a href="/">
-        <img src="../assets/menu.svg" class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-      </a>  
+      <button type="button" class="btn btn-primary btn-lg btn-floating me-3" mdbRipple (click)="sidebarOpened = !sidebarOpened">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <form class="d-none d-md-flex input-group w-auto my-auto">
+        <input
+          autocomplete="on"
+          type="search"
+          class="form-control rounded"
+          placeholder='Search (ctrl + "/" to focus)'
+          style="min-width: 225px"
+        />
+        <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+      </form>
     </div>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
@@ -13,66 +24,54 @@
     </ul>
 
     <div class="col-md-3 text-end">
-      <button type="button" class="btn btn-outline-primary me-2">Login</button>
-      <button type="button" class="btn btn-primary">Sign-up</button>
+      <button type="button" class="btn btn-outline-primary me-2" (click)="openLoginModal()">Login</button>
+      <button type="button" class="btn btn-primary" (click)="openSignupModal()">Sign-up</button>
     </div>
   </header>
 
   <div class="d-flex p-3">
-    <aside class="d-flex flex-column flex-shrink-0 p-3 rounded me-3" style="width: 280px; background-color: lavender;">
+    <aside class="d-flex flex-column flex-shrink-0 p-3 rounded me-3" [ngClass]="sidebarOpened ? 'opened' : 'closed'">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
         <span class="fs-4">Sidebar</span>
       </a>
-      <hr>
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-            Home
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-            Orders
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-            Products
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-            Customers
-          </a>
-        </li>
-      </ul>
+      <hr class="p-3">
+        <mdb-tabs [pills]="true" [vertical]="true">
+          <mdb-tab>
+            <ng-template mdbTabTitle
+              ><span><i class="fas fa-chart-pie fa-fw me-2"></i>Sales</span></ng-template
+            >
+            Tab content 1
+          </mdb-tab>
+          <mdb-tab>
+            <ng-template mdbTabTitle
+              ><span><i class="fas fa-chart-line fa-fw me-2"></i>Subscriptions</span></ng-template
+            >
+            Tab content 2
+          </mdb-tab>
+          <mdb-tab>
+            <ng-template mdbTabTitle
+              ><span><i class="fas fa-cogs fa-fw me-2"></i>Settings</span></ng-template
+            >
+            Tab content 3
+          </mdb-tab>
+        </mdb-tabs>
       <hr>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
           <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
           <strong>mdo</strong>
         </a>
-        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+        <!-- <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
           <li><a class="dropdown-item" href="#">New project...</a></li>
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><a class="dropdown-item" href="#">Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#">Sign out</a></li>
-        </ul>
+        </ul> -->
       </div>
     </aside>
 
-    <main>
+    <main class="container-fluid">
       <div>
         <router-outlet></router-outlet>
       </div> 

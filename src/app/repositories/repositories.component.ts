@@ -23,7 +23,8 @@ export class RepositoriesComponent {
 
 
   showAvailablePrivateRepositories() {
-    this.repoRequestService.getAvailablePrivateRepos().subscribe({next:(data: Repository[]) => this.repoList = data});   
+    this.repoRequestService.getAvailablePrivateRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; console.log(this.repoList); }});
+    
   }
 
 }

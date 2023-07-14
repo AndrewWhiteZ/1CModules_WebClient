@@ -40,11 +40,11 @@ export class RepoRequestService {
   // }
 
   getAvailablePrivateRepos() : Observable<Repository[]> {
-    return this.http.get('http://185.20.225.206/api/v1/me/repos').pipe(map((data:any)=>{
-        let repoList = data["data"];
-        return repoList.map(function(repo: any): Repository {
-            return new Repository(repo.name);
-          });
+    return this.http.get('api/v1/me/repos').pipe(map((data:any) => {
+      let repoList = data["data"];
+      return repoList.map(function(repo: any): Repository {
+          return new Repository(repo.id, repo.name, repo.tags, repo.owner, repo.public);
+        });
     }));
   }
 
