@@ -1,0 +1,39 @@
+<div class="d-flex">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between mb-0 pb-0">
+      <h5>Список модулей</h5>
+    </div>
+    <div class="card-body" style="height: 530px; overflow: overlay;">
+      <div *ngFor="let module of modulesList; let i = index" class="card border p-3 mb-3">
+        <div class="d-flex justify-content-between">
+          <div>
+            <div class="d-flex">
+              <h5 class="me-2 card-link text-primary">{{ module.name }}</h5>
+              <!-- <h5><span class="badge badge-success rounded-pill d-inline ms-1" *ngFor="let tag of repo.tags">{{ tag }}</span></h5> -->
+            </div>
+            <span>Захвачен: {{ module.locked }}</span>
+            <span>Создатель: {{ module.lastCommit.when }}</span>
+          </div>
+          <!-- <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-primary btn-floating me-2" mdbRipple rippleColor="dark" [routerLink]="['/repositories', repo.id]">
+              <i class="fas fa-external-link-alt"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
+              <i class="fas fa-info"></i>
+            </button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header d-flex justify-content-between mb-0 pb-0">
+      <h5>Список коммитов</h5>
+    </div>
+    <div class="card-body" style="height: 530px; overflow: overlay;">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+header {
+  background-color: lavenderblush;
+}
+
+.container-fluid {
+  padding: 0;
+  height: 89vh;
+}
+
+div .opened {
+  background-color: lightsalmon;
+  width: 280px;
+  transition: 0.3s;
+}
+
+div .closed {
+  background-color: lightsalmon;
+  width: 78px;
+  transition: 0.3s; 
+}
+
+aside .closed {
+  background-color: lavender;
+  transition: 0.3s;
+}
+
+aside .opened {
+  background-color: lavender;
+  transition: 0.3s;
+}

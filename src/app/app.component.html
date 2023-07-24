@@ -1,0 +1,113 @@
+<tui-root>
+  <div class="container-fluid flex-column">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-2 border-bottom shadow-4">
+      <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <button
+          tuiIconButton
+          appearance="primary"
+          size="m"
+          type="button"
+          shape="rounded"
+          class="tui-space_left-1 tui-space_right-3"
+          icon="tuiIconMenu"
+          (click)="onClick($event)"
+        >
+        </button>
+
+        <form class="b-form" [formGroup]="testForm" style="width: 250px;">
+          <tui-input 
+            formControlName="testValue"
+            tuiTextfieldSize="m"
+            [tuiTextfieldCleaner]="true"
+            [tuiTextfieldLabelOutside]="true"      
+          >
+            Поиск
+            <input
+              tuiTextfield
+              type="text"
+              placeholder="Поиск"
+              tuiTextfieldIcon="tuiIconMenu"
+              />
+          </tui-input>
+        </form>
+        
+        <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
+          <input
+            autocomplete="on"
+            type="search"
+            class="form-control rounded"
+            placeholder='Поиск'
+            style="min-width: 250px"
+          />
+          <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form> -->
+      </div>
+
+      <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none justify-content-end">
+        <div class="col-md-3 text-end" *ngIf="!authorized">
+          <button type="button" class="btn btn-primary me-2" (click)="openLoginModal()">Войти</button>
+        </div>
+        <div class="dropdown" *ngIf="authorized">
+          <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong>mdo</strong>
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="#">New project...</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="d-flex pe-3">
+      <aside class="d-flex flex-column flex-shrink-0 border-end shadow-4" [ngClass]="sidebarOpened ? 'opened' : 'closed'">
+        <nav
+        id="sidebarMenu"
+        class="collapse d-lg-block sidebar collapse bg-white"
+        >
+          <div class="position-sticky">
+            <div class="list-group list-group-flush">
+              <a
+                routerLink="/home"
+                class="list-group-item list-group-item-action ripples"
+                aria-current="true"
+                ><i class="fas fa-home fa-fw me-3"></i><span *ngIf="sidebarOpened">Главная</span>
+              </a>
+              <a
+                href="#"
+                class="list-group-item list-group-item-action py-2 ripples"
+                ><i class="fas fa-archive fa-fw me-3"></i><span *ngIf="sidebarOpened">Репозитории</span>
+              </a>
+              <a
+                href="#"
+                class="list-group-item list-group-item-action py-2 ripples"
+                ><i class="fas fa-scroll fa-fw me-3"></i><span *ngIf="sidebarOpened">Отрывки</span>
+              </a>
+              <a
+                class="list-group-item list-group-item-action py-2 ripples"
+                (click)="basicCollapse.toggle()"
+                role="button"
+                [attr.aria-expanded]="!basicCollapse.collapsed"
+                aria-controls="collapseExample"
+              ><span *ngIf="sidebarOpened">Link with href</span></a>
+              <div class="mt-3" id="collapseExample" mdbCollapse #basicCollapse="mdbCollapse">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
+                squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
+                sapiente ea proident.
+              </div>
+            </div>
+          </div>
+        </nav>
+      </aside>
+      <main class="container-fluid">
+        <div class="p-3 rounded border-1">
+          <router-outlet></router-outlet>
+        </div> 
+      </main>
+    </div>
+  </div>
+</tui-root>
