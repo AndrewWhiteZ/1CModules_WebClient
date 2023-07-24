@@ -18,5 +18,4 @@ export class Repository {
         this.creator = creator;
         this.isPublic = isPublic;
     }
-
-}
+  }
