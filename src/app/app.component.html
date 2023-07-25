@@ -30,7 +30,7 @@
         </form>
       </div>
 
-      <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none justify-content-end">
+      <div class="d-flex align-items-center col-md-3 mb-2 me-3 mb-md-0 text-dark text-decoration-none justify-content-end">
         <div class="col-md-3 text-end" *ngIf="!authorized">
           <button
             tuiButton
@@ -61,54 +61,22 @@
 
     <div class="d-flex">
       <aside class="d-flex flex-column flex-shrink-0 border-end shadow-4" [ngClass]="sidebarOpened ? 'opened' : 'closed'">
-        <!-- <nav
-        id="sidebarMenu"
-        class="collapse d-lg-block sidebar collapse bg-white"
-        >
-          <div class="position-sticky">
-            <div class="list-group list-group-flush">
-              <a
-                routerLink="/home"
-                class="list-group-item list-group-item-action ripples"
-                aria-current="true"
-                ><i class="fas fa-home fa-fw me-3"></i><span *ngIf="sidebarOpened">Главная</span>
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action py-2 ripples"
-                ><i class="fas fa-archive fa-fw me-3"></i><span *ngIf="sidebarOpened">Репозитории</span>
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action py-2 ripples"
-                ><i class="fas fa-scroll fa-fw me-3"></i><span *ngIf="sidebarOpened">Отрывки</span>
-              </a>
-              <a
-                class="list-group-item list-group-item-action py-2 ripples"
-                (click)="basicCollapse.toggle()"
-                role="button"
-                [attr.aria-expanded]="!basicCollapse.collapsed"
-                aria-controls="collapseExample"
-              ><span *ngIf="sidebarOpened">Link with href</span></a>
-              <div class="mt-3" id="collapseExample" mdbCollapse #basicCollapse="mdbCollapse">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                sapiente ea proident.
-              </div>
-            </div>
-          </div>
-        </nav> -->
-
-        <!-- <tui-accordion class="container">
+        <tui-accordion class="container-fluid" [rounded]="false">
           <tui-accordion-item>
-              Taiga UI cdk
-              <ng-template tuiAccordionItemContent>
-                  Development kit consisting of the low level tools and abstractions used to develop Taiga UI Angular entities
-              </ng-template>
+            Репозитории
+            <ng-template tuiAccordionItemContent [size]="s">          
+              <a
+                href="http://ng-web-apis.github.io/"
+                tuiAction
+                size="s"
+              >
+                Link
+              </a>
+            </ng-template>
           </tui-accordion-item>
           <tui-accordion-item>
               Taiga UI core
-              <ng-template tuiAccordionItemContent>
+              <ng-template tuiAccordionItemContent [size]="s">
                   <div #content>
                       Basic elements needed to develop components, directives and more using Taiga UI design system
                   </div>
@@ -120,7 +88,7 @@
                   The main set of components used to build Taiga UI based Angular applications
               </ng-template>
           </tui-accordion-item>
-        </tui-accordion> -->
+        </tui-accordion>
       </aside>   
       <main class="container-fluid">
           <div class="p-3 rounded border-1">

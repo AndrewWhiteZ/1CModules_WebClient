@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ModalComponent } from './modal/modal.component';
 import { MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TuiInputComponent } from '@taiga-ui/kit';
+import { TuiAccordionComponent, TuiAccordionItemComponent } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +15,8 @@ export class AppComponent {
   testForm = new FormGroup({
     testValue: new FormControl(""),
   });
+
+  visitedRepos: string[] = ["/"];
 
   authorized: boolean = false;
   sidebarOpened: boolean = false;
