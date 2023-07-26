@@ -1,43 +1,183 @@
-<div class="card">
-  <div class="card-header d-flex justify-content-between mb-0 pb-0">
-    <mdb-tabs class="mb-0 pb-0" (activeTabChange)="onAccessLevelTabChange($event)">
-      <mdb-tab tabindex="0">
-        <ng-template mdbTabTitle><span><i class="fas fa-user-lock me-2"></i>Мои репозитории</span>       
-        </ng-template>
-      </mdb-tab>
-      <mdb-tab tabindex="1">
-        <ng-template mdbTabTitle><span><i class="fas fa-globe me-2"></i>Глобальный</span>
-        </ng-template>
-      </mdb-tab>
-    </mdb-tabs>
-    <mdb-tabs class="mb-0 pb-0" (activeTabChange)="onFormatTabChange($event)">
-      <mdb-tab tabindex="0">
-        <ng-template mdbTabTitle><span><i class="fas fa-bars me-2 mb-0"></i>Список</span>
-        </ng-template>
-      </mdb-tab>
-      <mdb-tab tabindex="1">
-        <ng-template mdbTabTitle><span><i class="fas fa-table me-2 mb-0"></i>Таблица</span>
-        </ng-template>
-      </mdb-tab>
-      <mdb-tab tabindex="2">
-        <ng-template mdbTabTitle><span><i class="fas fa-grip-horizontal me-2 mb-0"></i>Плитка</span></ng-template>
-      </mdb-tab>
-    </mdb-tabs>
-  </div>
-  <div class="card-body" style="height: 530px; overflow: overlay;">
-    <div *ngIf="activeFormatTab == 0">
-      <div *ngFor="let repo of repoList; let i = index" class="card border p-3 mb-3">
+<tui-island class="p-0">
+  <header class="d-flex border-bottom justify-content-between px-4 pb-2">
+    <tui-tabs [(activeItemIndex)]="activeAccessLevelTab" (activeItemIndexChange)="onAccessLevelTabChange()">
+      <button
+        tuiTab
+        class="px-2"
+      >
+        <tui-svg
+          src="tuiIconGlobeLarge"
+          class="tui-space_right-2"
+        ></tui-svg>
+        Глобальный
+      </button>
+      <button
+        tuiTab
+        class="px-2"
+      >
+        <tui-svg
+          src="tuiIconEyeOffLarge"
+          class="tui-space_right-2"
+        ></tui-svg>
+        Мои репозитории
+      </button>
+    </tui-tabs>
+
+    <tui-tabs [(activeItemIndex)]="activeFormatTab">
+      <button
+        tuiTab
+        class="px-2"
+      >
+        <tui-svg
+          src="tuiIconMenuLarge"
+          class="tui-space_right-2"
+        ></tui-svg>
+        Список
+      </button>
+      <button
+        tuiTab
+        class="px-2"
+      >
+        <tui-svg
+          src="tuiIconGridLarge"
+          class="tui-space_right-2"
+        ></tui-svg>
+        Плитка
+      </button>
+      <button
+        tuiTab
+        class="px-2"
+      >
+        <tui-svg
+          src="tuiIconTableLarge"
+          class="tui-space_right-2"
+        ></tui-svg>
+        Таблица
+      </button>
+    </tui-tabs>
+  </header>
+
+  <div style="height: 760px; overflow: overlay;">
+    <div *ngIf="activeFormatTab == 0" class="m-3">
+      <tui-island *ngFor="let repo of repoList; let i = index" class="p-3 mb-2">
         <div class="d-flex justify-content-between">
           <div>
             <div class="d-flex">
-              <i class="fas fa-globe pt-1 me-2" *ngIf="repo.isPublic"></i>
-              <i class="fas fa-eye-slash pt-1 me-2" *ngIf="!repo.isPublic"></i>
-              <h5 class="me-2 card-link text-primary">{{ repo.name }}</h5>
-              <h5><span class="badge badge-success rounded-pill d-inline ms-1" *ngFor="let tag of repo.tags">{{ tag }}</span></h5>
+              <tui-svg
+                src="tuiIconGlobe"
+                class="tui-space_right-1"
+                *ngIf="repo.isPublic"
+              ></tui-svg>
+              <tui-svg
+                src="tuiIconEyeOff"
+                class="tui-space_right-1"
+                *ngIf="!repo.isPublic"
+              ></tui-svg>
+              <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
+              <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
             </div>
             <span>Создатель: {{ repo.creator.fullName }}</span>
           </div>
           <div class="d-flex align-items-center">
+            <button
+              tuiIconButton
+              appearance="primary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconExternalLink"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+            <button
+              tuiIconButton
+              appearance="secondary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconEdit"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+            <button
+              tuiIconButton
+              appearance="secondary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconInfo"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+          </div>
+        </div>
+      </tui-island>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 m-2" *ngIf="activeFormatTab == 1"> 
+      <div class="col" *ngFor="let repo of repoList; let i = index">
+        <tui-island class="h-100">
+          <div class="d-flex">
+            <tui-svg
+              src="tuiIconGlobe"
+              class="tui-space_right-1"
+              *ngIf="repo.isPublic"
+            ></tui-svg>
+            <tui-svg
+              src="tuiIconEyeOff"
+              class="tui-space_right-1"
+              *ngIf="!repo.isPublic"
+            ></tui-svg>
+            <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
+            <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+          </div>
+          <div class="tui-island__paragraph">
+            {{ repo.description }}
+          </div>
+          <div class="d-flex align-items-center justify-content-center mt-3">
+            <button
+              tuiIconButton
+              appearance="primary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconExternalLink"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+            <button
+              tuiIconButton
+              appearance="secondary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconEdit"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+            <button
+              tuiIconButton
+              appearance="secondary"
+              size="m"
+              type="button"
+              shape="rounded"
+              class="tui-space_right-3"
+              icon="tuiIconInfo"
+              [routerLink]="['/repositories/', repo.id]">
+            </button>
+          </div>
+        </tui-island>
+        <!-- <tui-island>
+          <div class="card-body">
+            <div class="d-flex">
+              <i class="fas fa-globe pt-1 me-2" *ngIf="repo.isPublic"></i>
+              <i class="fas fa-eye-slash pt-1 me-2" *ngIf="!repo.isPublic"></i>
+              <h5 class="card-title">{{ repo.name }}</h5>
+            </div>
+            <h5><span class="badge badge-success rounded-pill d-inline ms-1" *ngFor="let tag of repo.tags">{{ tag }}</span></h5>
+            {{ repo.description }}
+          </div>
+          <div class="d-flex align-items-center justify-content-center card-footer" style="background-color: rgba(0, 0, 0, 0.05);">
             <button type="button" class="btn btn-primary btn-floating me-2" mdbRipple rippleColor="dark" [routerLink]="['/repositories/', repo.id]">
               <i class="fas fa-external-link-alt"></i>
             </button>
@@ -48,11 +188,11 @@
               <i class="fas fa-info"></i>
             </button>
           </div>
-        </div>
+        </tui-island> -->
       </div>
     </div>
 
-    <table class="table table-hover align-middle mb-0 bg-white table-sm" *ngIf="activeFormatTab == 1">
+    <!-- <table class="table table-hover align-middle mb-0 bg-white table-sm" *ngIf="activeFormatTab == 2">
       <thead class="bg-light">
         <tr class="table-secondary">
           <th scope="col">№</th>
@@ -90,33 +230,66 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
 
-    <div class="row row-cols-1 row-cols-md-4 g-4" *ngIf="activeFormatTab == 2">
-      <div class="col" *ngFor="let repo of repoList; let i = index">
-        <div class="card border h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <i class="fas fa-globe pt-1 me-2" *ngIf="repo.isPublic"></i>
-              <i class="fas fa-eye-slash pt-1 me-2" *ngIf="!repo.isPublic"></i>
-              <h5 class="card-title">{{ repo.name }}</h5>
+    <table
+      tuiTable
+      class="table"
+      [columns]="columns"
+      *ngIf="activeFormatTab == 2"
+    >
+      <thead>
+        <tr tuiThGroup>
+          <th tuiTh [resizable]="true">Название</th>
+          <th tuiTh [resizable]="true">Публичный</th>
+          <th tuiTh [resizable]="true">Метки</th>
+          <th tuiTh [resizable]="true">Действия</th>
+        </tr>
+      </thead>
+      <tbody
+        tuiTbody
+        [data]="repoList"
+      >
+        <tr
+          *ngFor="let repo of repoList"
+          tuiTr
+        >
+          <td *tuiCell="'tags'" tuiTd>
+            <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+          </td>
+          <td *tuiCell="'actions'" tuiTd>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                tuiIconButton
+                appearance="primary"
+                size="m"
+                type="button"
+                shape="rounded"
+                icon="tuiIconExternalLink"
+                [routerLink]="['/repositories/', repo.id]">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="m"
+                type="button"
+                shape="rounded"
+                icon="tuiIconEdit"
+                [routerLink]="['/repositories/', repo.id]">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="m"
+                type="button"
+                shape="rounded"
+                icon="tuiIconInfo"
+                [routerLink]="['/repositories/', repo.id]">
+              </button>
             </div>
-            <h5><span class="badge badge-success rounded-pill d-inline ms-1" *ngFor="let tag of repo.tags">{{ tag }}</span></h5>
-            {{ repo.description }}
-          </div>
-          <div class="d-flex align-items-center justify-content-center card-footer" style="background-color: rgba(0, 0, 0, 0.05);">
-            <button type="button" class="btn btn-primary btn-floating me-2" mdbRipple rippleColor="dark" [routerLink]="['/repositories/', repo.id]">
-              <i class="fas fa-external-link-alt"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-              <i class="fas fa-info"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div>
+</tui-island>

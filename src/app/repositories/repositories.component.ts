@@ -1,7 +1,6 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { RepoRequestService } from '../repo-request.service';
 import { Repository } from '../Repository';
-import { MdbTabsModule } from 'mdb-angular-ui-kit/tabs'
 
 @Component({
   selector: 'app-repositories',
@@ -9,11 +8,12 @@ import { MdbTabsModule } from 'mdb-angular-ui-kit/tabs'
   styleUrls: ['./repositories.component.scss']
 })
 export class RepositoriesComponent {
-
   repoRequestService: RepoRequestService;
   repoList: Array<Repository> = [];
   activeAccessLevelTab: number = 1;
   activeFormatTab: number = 0;
+
+  readonly columns = ['name', 'isPublic', 'tags', 'actions'];
 
   constructor(repoRequestService: RepoRequestService, private cdr: ChangeDetectorRef) {
     this.repoRequestService = repoRequestService;
@@ -31,11 +31,10 @@ export class RepositoriesComponent {
     this.repoRequestService.getGlobalRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; }});
   }
 
-  onAccessLevelTabChange(event: any):void {
-    this.activeAccessLevelTab = event.index;
-    if (this.activeAccessLevelTab == 0) {
+  onAccessLevelTabChange():void {
+    if (this.activeAccessLevelTab == 1) {
       this.showAvailablePrivateRepositories();
-    } else if (this.activeAccessLevelTab == 1) {
+    } else if (this.activeAccessLevelTab == 0) {
       this.showGlobalRepositories();
     }
     this.cdr.detectChanges();
