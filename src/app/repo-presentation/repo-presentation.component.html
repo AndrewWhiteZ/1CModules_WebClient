@@ -1,7 +1,7 @@
 <div class="d-flex gap-3">
-  <tui-island class="p-0">
-    <header class="d-flex border-bottom justify-content-between px-4 pb-2">
-      <tui-tabs [(activeItemIndex)]="activeOutputFormat">
+  <tui-island class="p-0" style="width: 50%;">
+    <header class="d-flex border-bottom justify-content-between px-0 pb-2">
+      <tui-tabs [(activeItemIndex)]="activeOutputFormat" class="tui-space_left-3">
         <button
           tuiTab
           class="px-2"
@@ -23,25 +23,192 @@
           Дерево
         </button>
       </tui-tabs>
+
+      <tui-breadcrumbs
+        size="l"
+        class="tui-space_top-3"
+      >
+        <ng-container *ngFor="let pathPart of currentPath">
+            <a
+                *tuiItem
+                tuiLink
+            >
+              {{ pathPart }}
+            </a>
+        </ng-container>
+        <!-- <ng-container>
+          <a
+            *tuiItem
+            tuiLink
+          >
+            First
+          </a>
+        </ng-container>
+        <ng-container>
+          <a
+            *tuiItem
+            tuiLink
+          >
+            First
+          </a>
+        </ng-container>
+        <ng-container>
+          <a
+            *tuiItem
+            tuiLink
+          >
+            First
+          </a>
+        </ng-container> -->
+      </tui-breadcrumbs>
+
+      <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%">
+        <tui-input 
+          formControlName="testValue"
+          tuiTextfieldSize="m"
+          [tuiTextfieldCleaner]="true"
+          [tuiTextfieldLabelOutside]="true"
+          tuiTextfieldIconLeft="tuiIconSearch">
+          Поиск по файлам
+          <input
+            tuiTextfield
+            type="text"
+            placeholder="Поиск"
+            tuiTextfieldIcon="tuiIconMenu"/>
+        </tui-input>
+      </form>
     </header>
     
     <div *ngIf="activeOutputFormat == 0">
       <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-        <tui-accordion-item [showArrow]="false">
-          Taiga UI cdk
+        <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory($event)">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex">
+              <div class="tui-space_right-3">
+                <tui-svg src="tuiIconFolderMinusLarge"></tui-svg>
+              </div>
+              <div class="tui-space_right-3">
+                <b>...</b>
+              </div>
+            </div>
+            <div>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconArrowUpCircle"
+                (click)="moveToParentDirectory($event)">
+              </button>
+            </div>
+          </div>
         </tui-accordion-item>
-        <tui-accordion-item [showArrow]="false">
-          Taiga UI cdk
-        </tui-accordion-item>
-        <tui-accordion-item [showArrow]="false">
-          Taiga UI cdk
+        <tui-accordion-item *ngFor="let item of data.files" [showArrow]="false" size="s" (click)="openAccordionItem(item)" (dblclick)="moveToChildDirectory(item)">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex">
+              <div class="tui-space_right-3">
+                <tui-svg src="tuiIconFileLarge" *ngIf="!item.files"></tui-svg>
+                <tui-svg src="tuiIconFolderPlusLarge" *ngIf="!!item.files"></tui-svg>
+              </div>
+              <div class="tui-space_right-4">
+                <b>{{ item.name }}</b>
+              </div>
+            </div>
+            <div *ngIf="!item.files">
+              <button
+                tuiIconButton
+                appearance="secondary-destructive"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconLock"
+                *ngIf="item.locked"
+                (click)="unlockFile(item)">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconUnlock"
+                *ngIf="!item.locked"
+                (click)="lockFile(item)">
+              </button>      
+            </div>
+            <div *ngIf="!!item.files">
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconArrowDownCircle"
+                (click)="moveToChildDirectory(item)">
+              </button>
+            </div>
+          </div>
+          <ng-template tuiAccordionItemContent *ngIf="!item.files">
+            <div class="d-flex align-items-center justify-content-between border-bottom border-2 pb-2">
+              <div>
+                <h5>Последний коммит<br><b>{{ item.lastCommit.message }}</b> –
+                <span style="font-size: 18px;">{{ item.lastCommit.when.toString().slice(8, 10) + 
+                '.' + item.lastCommit.when.toString().slice(5, 7) + 
+                '.' + item.lastCommit.when.toString().slice(0, 4) + 
+                ' ' + item.lastCommit.when.toString().slice(11, 13) + 
+                ':' + item.lastCommit.when.toString().slice(14, 16) + 
+                ':' + item.lastCommit.when.toString().slice(17, 19) 
+                }}</span></h5>
+              </div>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="m"
+                type="button"
+                shape="rounded"
+                class="tui-space_left-3"
+                icon="tuiIconDownloadLarge"
+                (click)="downloadLastCommit(item)">
+              </button>
+            </div>
+            <div class="d-flex align-items-center tui-space_top-3 gap-2">
+              <button
+                tuiButton
+                appearance="primary"
+                size="m"
+                type="button"
+                icon="tuiIconEdit"
+                (click)="editFile(item)">
+                Изменить
+              </button>
+              <button
+                tuiButton
+                appearance="secondary"
+                size="m"
+                type="button"
+                icon="tuiIconInfo"
+                (click)="infoFile(item)">
+                Подробнее
+              </button>
+              <button
+                tuiButton
+                appearance="secondary-destructive"
+                size="m"
+                type="button"
+                icon="tuiIconTrash2"
+                (click)="deleteFile(item)">
+                Удалить
+              </button>
+            </div>
+          </ng-template>
         </tui-accordion-item>
       </tui-accordion>
     </div>
 
     <div *ngIf="activeOutputFormat == 1">
       <tui-tree 
-        *ngFor="let item of data.children"
+        *ngFor="let item of data.files"
         [tuiTreeController]="true"
         [value]="item"
         [content]="content"
@@ -49,39 +216,87 @@
       </tui-tree>
     </div>
     
-    <ng-template
-        #content
-        let-item
-    >
-        {{ item.text }}
+    <ng-template #content let-item>
+      {{ item.name }}
     </ng-template>
   </tui-island>
 
-  <tui-island class="p-0">
-    <header class="d-flex border-bottom justify-content-between px-4 pb-2">
-      <h3 class="tui-island__title mt-4">Список коммитов</h3>
-      <!-- <tui-tabs [(activeItemIndex)]="activeOutputFormat">
-        <button
-          tuiTab
-          class="px-2"
-        >
-          <tui-svg
-            src="tuiIconListLarge"
-            class="tui-space_right-2"
-          ></tui-svg>
-          Список
-        </button>
-        <button
-          tuiTab
-          class="px-2"
-        >
-          <tui-svg
-            src="tuiIconGitPullRequestLarge"
-            class="tui-space_right-2"
-          ></tui-svg>
-          Дерево
-        </button>
-      </tui-tabs> -->
+  <tui-island class="p-0" style="width: 50%;">
+    <header class="d-flex border-bottom justify-content-between align-items-center">
+      <button
+        tuiButton
+        appearance="secondary"
+        size="m"
+        type="button"
+        icon="tuiIconUploadLarge"
+        class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
+        (click)="commit($event)">
+        Сделать коммит
+      </button>
+      <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%">
+        <tui-input 
+          formControlName="testValue"
+          tuiTextfieldSize="m"
+          [tuiTextfieldCleaner]="true"
+          [tuiTextfieldLabelOutside]="true"
+          tuiTextfieldIconLeft="tuiIconSearch">
+          Поиск по коммитам
+          <input
+            tuiTextfield
+            type="text"
+            placeholder="Поиск"
+            tuiTextfieldIcon="tuiIconMenu"/>
+        </tui-input>
+      </form>
     </header>
+    <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+      <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
+            <b>{{ commit.message }}</b>
+            <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+          </div>
+          <div class="tui-space_right-3">
+            {{ commit.when.day + 
+              '.' + commit.when.month + 
+              '.' + commit.when.year + 
+              ' ' + commit.when.hours + 
+              ':' + commit.when.minutes + 
+              ':' + commit.when.seconds 
+            }}
+          </div>
+          <div class="d-flex align-items-center tui-space_right-3">
+            <a tuiLink routerLink="/components/link">
+              {{ commit.author.fullName }}
+            </a>
+            <tui-avatar
+              [text]="commit.author.fullName"
+              size="s"
+              class="tui-space_left-2"
+              [rounded]="true"
+              [autoColor]="true"
+            ></tui-avatar>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button
+              tuiIconButton
+              appearance="primary"
+              size="s"
+              type="button"
+              shape="rounded"
+              icon="tuiIconDownload">
+            </button>
+            <button
+              tuiIconButton
+              appearance="secondary"
+              size="s"
+              type="button"
+              shape="rounded"
+              icon="tuiIconEdit3">
+            </button>
+          </div>
+        </div>
+      </tui-accordion-item>
+    </tui-accordion>
   </tui-island>
 </div>

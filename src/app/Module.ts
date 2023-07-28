@@ -1,14 +1,14 @@
-import { Commit } from "./Commit";
+import { CommitShort } from "./CommitShort";
 
 export class Module {
 
     name: string;
     type: string;
-    lastCommit: Commit;
+    lastCommit: CommitShort;
     locked: boolean;
     files: Module[] | null;
 
-    constructor(name: string, type: string, lastCommit: Commit, locked: boolean, files: Module[] | null) {
+    constructor(name: string, type: string, lastCommit: CommitShort, locked: boolean, files: Module[] | null) {
         this.name = name;
         this.type = type;
         this.lastCommit = lastCommit;

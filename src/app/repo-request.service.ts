@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Repository } from './Repository';
 import { Module } from './Module';
+import { Commit } from './Commit';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -50,4 +51,12 @@ export class RepoRequestService {
     }));
   }
 
+  getCommitsByRepoModule(repoId: string, pathToModule: string): Observable<Commit[]> {
+    return this.http.get(`/api/v1/repos/${repoId}/commits/${pathToModule}`).pipe(map((data: any) => {
+      let commitsList = data["data"];
+      return commitsList.map(function(commit: any): Commit {
+        return new Commit(commit.id, commit.message, commit.tags, commit.author, commit.when);
+      });
+    }));
+  }
 }
