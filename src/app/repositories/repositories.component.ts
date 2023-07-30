@@ -1,19 +1,23 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { RepoRequestService } from '../repo-request.service';
 import { Repository } from '../Repository';
+import { TUI_ARROW } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-repositories',
   templateUrl: './repositories.component.html',
-  styleUrls: ['./repositories.component.scss']
+  styleUrls: ['./repositories.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepositoriesComponent {
   repoRequestService: RepoRequestService;
   repoList: Array<Repository> = [];
+  tableRepoList: Array<Repository> = []; 
   activeAccessLevelTab: number = 1;
   activeFormatTab: number = 0;
 
-  readonly columns = ['name', 'isPublic', 'tags', 'actions'];
+  arrow = TUI_ARROW;
+  columns = ['name', 'isPublic', 'tags', 'creator', 'description', 'actions'];
 
   constructor(repoRequestService: RepoRequestService, private cdr: ChangeDetectorRef) {
     this.repoRequestService = repoRequestService;
@@ -24,11 +28,11 @@ export class RepositoriesComponent {
   }
 
   showAvailablePrivateRepositories() {
-    this.repoRequestService.getAvailablePrivateRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; }});
+    this.repoRequestService.getAvailablePrivateRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; this.cdr.detectChanges(); }});
   }
 
   showGlobalRepositories() {
-    this.repoRequestService.getGlobalRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; }});
+    this.repoRequestService.getGlobalRepos().subscribe({next:(data: Repository[]) => { this.repoList = data; this.cdr.detectChanges(); }});
   }
 
   onAccessLevelTabChange():void {
@@ -44,5 +48,9 @@ export class RepositoriesComponent {
     this.activeFormatTab = event.index;
     this.cdr.detectChanges();
   }
+
+  // remove(item: Repository): void {
+  //   this.repoList = this.repoList.filter(repo => repo !== item);
+  // }
 
 }

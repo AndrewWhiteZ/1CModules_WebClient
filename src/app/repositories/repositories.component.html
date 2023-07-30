@@ -23,6 +23,33 @@
       </button>
     </tui-tabs>
 
+    <!-- <div>
+      <tui-input
+        class="input"
+        [tuiTextfieldCleaner]="true"
+      >
+        Поиск по таблице
+      </tui-input>
+      <tui-hosted-dropdown [content]="dropdown">
+        <button
+          tuiButton
+          size="m"
+          type="button"
+          [iconRight]="arrow"
+        >
+          Колонки
+        </button>
+        <ng-template #dropdown>
+          <tui-reorder
+            class="columns"
+            [enabled]="enabled"
+            [(items)]="initial"
+            (enabledChange)="onEnabled($event)"
+          ></tui-reorder>
+        </ng-template>
+      </tui-hosted-dropdown>
+    </div> -->
+
     <tui-tabs [(activeItemIndex)]="activeFormatTab">
       <button
         tuiTab
@@ -57,10 +84,10 @@
     </tui-tabs>
   </header>
 
-  <div style="height: 760px; overflow: overlay;">
+  <div style="height: 730px; overflow: overlay;">
     <div *ngIf="activeFormatTab == 0" class="m-3">
       <tui-island *ngFor="let repo of repoList; let i = index" class="p-3 mb-2">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="d-flex">
               <tui-svg
@@ -78,7 +105,7 @@
             </div>
             <span>Создатель: {{ repo.creator.fullName }}</span>
           </div>
-          <div class="d-flex align-items-center">
+          <div class="d-flexalign-items-center">
             <button
               tuiIconButton
               appearance="primary"
@@ -116,7 +143,7 @@
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 m-2" *ngIf="activeFormatTab == 1"> 
       <div class="col" *ngFor="let repo of repoList; let i = index">
-        <tui-island class="h-100">
+        <tui-island class="d-flex flex-column justify-content-between">
           <div class="d-flex">
             <tui-svg
               src="tuiIconGlobe"
@@ -237,32 +264,76 @@
       class="table"
       [columns]="columns"
       *ngIf="activeFormatTab == 2"
+      size="s"
     >
       <thead>
         <tr tuiThGroup>
-          <th tuiTh [resizable]="true">Название</th>
-          <th tuiTh [resizable]="true">Публичный</th>
-          <th tuiTh [resizable]="true">Метки</th>
-          <th tuiTh [resizable]="true">Действия</th>
+          <th tuiTh *tuiHead="'name'" [resizable]="true" style="font-size: 18px;">Название</th>
+          <th tuiTh *tuiHead="'isPublic'" [resizable]="true" style="font-size: 18px;">Статус</th>
+          <th tuiTh *tuiHead="'tags'" [resizable]="true" style="font-size: 18px;">Метки</th>
+          <th tuiTh *tuiHead="'creator'" [resizable]="true" style="font-size: 18px;">Создатель</th>
+          <th tuiTh *tuiHead="'description'" [resizable]="true" style="font-size: 18px;">Описание</th>
+          <th tuiTh *tuiHead="'actions'" [resizable]="true" [sorter]="null"></th>
         </tr>
       </thead>
       <tbody
+        *tuiLet="repoList | tuiTableSort as sortedRepos"
         tuiTbody
         [data]="repoList"
       >
         <tr
-          *ngFor="let repo of repoList"
+          *ngFor="let repo of sortedRepos; let index = index"
           tuiTr
         >
+          <td *tuiCell="'name'" tuiTd>
+            <a
+              tuiLink
+              [routerLink]="['/repositories/', repo.id]"
+              style="font-size: 20px;"
+            >
+              {{ repo.name }}
+            </a>
+          </td>
+          <td *tuiCell="'isPublic'" tuiTd>
+            <tui-marker-icon src="tuiIconGlobe" size="xs" mode="link" *ngIf="repo.isPublic"></tui-marker-icon>
+            <tui-marker-icon src="tuiIconEyeOff" size="xs" mode="error" *ngIf="!repo.isPublic"></tui-marker-icon>
+          </td>
           <td *tuiCell="'tags'" tuiTd>
-            <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+            <tui-tag 
+              *ngFor="let tag of repo.tags" 
+              status="custom" 
+              [autoColor]="true" 
+              size="l" 
+              [value]="tag" 
+              class="tui-space_right-1 tui-space_bottom-1"
+              style="font-size: 16px;"
+            ></tui-tag>
+          </td>
+          <td *tuiCell="'creator'" tuiTd>
+            <div class="d-flex align-items-center">
+              <tui-avatar
+                [text]="repo.creator.fullName"
+                size="s"
+                class="tui-space_right-3"
+                [rounded]="true"
+                [autoColor]="true"
+              ></tui-avatar>
+              <a tuiLink routerLink="/components/link" style="font-size: 18px;">
+                {{ repo.creator.fullName }}
+              </a>
+            </div>
+          </td>
+          <td *tuiCell="'description'" tuiTd>
+            <div style="font-size: 16px;">
+              {{ repo.description }}
+            </div>
           </td>
           <td *tuiCell="'actions'" tuiTd>
             <div class="d-flex align-items-center gap-2">
               <button
                 tuiIconButton
                 appearance="primary"
-                size="m"
+                size="s"
                 type="button"
                 shape="rounded"
                 icon="tuiIconExternalLink"
@@ -271,7 +342,7 @@
               <button
                 tuiIconButton
                 appearance="secondary"
-                size="m"
+                size="s"
                 type="button"
                 shape="rounded"
                 icon="tuiIconEdit"
@@ -280,7 +351,7 @@
               <button
                 tuiIconButton
                 appearance="secondary"
-                size="m"
+                size="s"
                 type="button"
                 shape="rounded"
                 icon="tuiIconInfo"

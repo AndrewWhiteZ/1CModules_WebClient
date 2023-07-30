@@ -1,7 +1,8 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TUI_SANITIZER } from "@taiga-ui/core";
-import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule } from "@taiga-ui/kit";
-import { TuiTableModule } from "@taiga-ui/addon-table"
+import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TUI_SANITIZER } from "@taiga-ui/core";
+import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule  } from "@taiga-ui/kit";
+import { TuiTableModule, TuiReorderModule } from "@taiga-ui/addon-table"
+import { TuiLetModule } from '@taiga-ui/cdk';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -80,6 +81,11 @@ import { AngularSplitModule } from 'angular-split';
     TuiTreeModule,
     TuiAvatarModule,
     TuiBreadcrumbsModule,
+    TuiLetModule,
+    TuiLineClampModule,
+    TuiMarkerIconModule,
+    TuiReorderModule,
+    TuiHostedDropdownModule,
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]

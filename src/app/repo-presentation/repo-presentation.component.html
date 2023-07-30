@@ -79,7 +79,7 @@
       </form>
     </header>
     
-    <div *ngIf="activeOutputFormat == 0">
+    <div *ngIf="activeOutputFormat == 0" style="overflow: overlay;">
       <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
         <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory($event)">
           <div class="d-flex align-items-center justify-content-between">
@@ -206,7 +206,7 @@
       </tui-accordion>
     </div>
 
-    <div *ngIf="activeOutputFormat == 1">
+    <div *ngIf="activeOutputFormat == 1" style="overflow: overlay;">
       <tui-tree 
         *ngFor="let item of data.files"
         [tuiTreeController]="true"
@@ -249,54 +249,57 @@
         </tui-input>
       </form>
     </header>
-    <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-      <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s">
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
-            <b>{{ commit.message }}</b>
-            <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+    
+    <div style="overflow: overlay;">
+      <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+        <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
+              <b>{{ commit.message }}</b>
+              <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+            </div>
+            <div class="tui-space_right-3">
+              {{ commit.when.day + 
+                '.' + commit.when.month + 
+                '.' + commit.when.year + 
+                ' ' + commit.when.hours + 
+                ':' + commit.when.minutes + 
+                ':' + commit.when.seconds 
+              }}
+            </div>
+            <div class="d-flex align-items-center tui-space_right-3">
+              <tui-avatar
+                [text]="commit.author.fullName"
+                size="s"
+                class="tui-space_right-2"
+                [rounded]="true"
+                [autoColor]="true"
+              ></tui-avatar>
+              <a tuiLink routerLink="/components/link">
+                {{ commit.author.fullName }}
+              </a>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                tuiIconButton
+                appearance="primary"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconDownload">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="s"
+                type="button"
+                shape="rounded"
+                icon="tuiIconEdit3">
+              </button>
+            </div>
           </div>
-          <div class="tui-space_right-3">
-            {{ commit.when.day + 
-              '.' + commit.when.month + 
-              '.' + commit.when.year + 
-              ' ' + commit.when.hours + 
-              ':' + commit.when.minutes + 
-              ':' + commit.when.seconds 
-            }}
-          </div>
-          <div class="d-flex align-items-center tui-space_right-3">
-            <a tuiLink routerLink="/components/link">
-              {{ commit.author.fullName }}
-            </a>
-            <tui-avatar
-              [text]="commit.author.fullName"
-              size="s"
-              class="tui-space_left-2"
-              [rounded]="true"
-              [autoColor]="true"
-            ></tui-avatar>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button
-              tuiIconButton
-              appearance="primary"
-              size="s"
-              type="button"
-              shape="rounded"
-              icon="tuiIconDownload">
-            </button>
-            <button
-              tuiIconButton
-              appearance="secondary"
-              size="s"
-              type="button"
-              shape="rounded"
-              icon="tuiIconEdit3">
-            </button>
-          </div>
-        </div>
-      </tui-accordion-item>
-    </tui-accordion>
+        </tui-accordion-item>
+      </tui-accordion>
+    </div>
   </tui-island>
 </div>

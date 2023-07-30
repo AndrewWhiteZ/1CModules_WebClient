@@ -85,7 +85,7 @@ export class RepoPresentationComponent {
   }
 
   moveToChildDirectory(module: Module): void {
-
+    
   }
 
   readonly handler: TuiHandler<Module, readonly Module[]> = item => item.files || EMPTY_ARRAY;
