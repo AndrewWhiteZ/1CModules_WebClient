@@ -62,9 +62,9 @@
         </ng-container> -->
       </tui-breadcrumbs>
 
-      <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%">
+      <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
         <tui-input 
-          formControlName="testValue"
+          formControlName="fileSearchValue"
           tuiTextfieldSize="m"
           [tuiTextfieldCleaner]="true"
           [tuiTextfieldLabelOutside]="true"
@@ -124,7 +124,7 @@
                 shape="rounded"
                 icon="tuiIconLock"
                 *ngIf="item.locked"
-                (click)="unlockFile(item)">
+                (click)="unlockFile($event, item)">
               </button>
               <button
                 tuiIconButton
@@ -134,7 +134,7 @@
                 shape="rounded"
                 icon="tuiIconUnlock"
                 *ngIf="!item.locked"
-                (click)="lockFile(item)">
+                (click)="lockFile($event, item)">
               </button>      
             </div>
             <div *ngIf="!!item.files">
@@ -233,9 +233,9 @@
         (click)="commit($event)">
         Сделать коммит
       </button>
-      <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%">
+      <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%" [formGroup]="commitSearchForm">
         <tui-input 
-          formControlName="testValue"
+          formControlName="commitSearchValue"
           tuiTextfieldSize="m"
           [tuiTextfieldCleaner]="true"
           [tuiTextfieldLabelOutside]="true"
@@ -268,14 +268,14 @@
               }}
             </div>
             <div class="d-flex align-items-center tui-space_right-3">
-              <tui-avatar
-                [text]="commit.author.fullName"
-                size="s"
-                class="tui-space_right-2"
-                [rounded]="true"
-                [autoColor]="true"
-              ></tui-avatar>
-              <a tuiLink routerLink="/components/link">
+              <a tuiLink [routerLink]="'/profile/' + commit.author.id" style="font-size: 16px;" class="d-flex align-items-center">
+                <tui-avatar
+                  [text]="commit.author.fullName"
+                  size="s"
+                  class="tui-space_right-3"
+                  [rounded]="true"
+                  [autoColor]="true"
+                ></tui-avatar>
                 {{ commit.author.fullName }}
               </a>
             </div>

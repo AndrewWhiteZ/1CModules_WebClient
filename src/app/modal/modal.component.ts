@@ -1,10 +1,12 @@
-import { Component, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MdbTabsComponent } from 'mdb-angular-ui-kit/tabs';
 import { LoginService } from '../login.service';
 import { AuthRequest } from '../auth-request';
 import { RegRequest } from '../reg-request';
+import { TuiDialogContext, TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-modal',
@@ -20,7 +22,10 @@ export class ModalComponent {
   cb: Function = Function();
   formType: number = 0;
 
-  constructor(private cdr: ChangeDetectorRef, public modalRef: MdbModalRef<ModalComponent>, private loginService: LoginService) {
+  constructor(private cdr: ChangeDetectorRef, 
+              public modalRef: MdbModalRef<ModalComponent>, 
+              private loginService: LoginService, 
+              @Inject(TuiDialogService)  private readonly dialogs: TuiDialogService) {
     if (this.formType == 0) {
       this.validationForm = new FormGroup({
         login: new FormControl(null, { validators: Validators.required, updateOn: 'blur' }),
@@ -78,5 +83,19 @@ export class ModalComponent {
 
   get password(): AbstractControl {
     return this.validationForm.get('password')!;
+  }
+
+  onClick(
+    content: PolymorpheusContent<TuiDialogContext>,
+    header: PolymorpheusContent,
+    size: TuiDialogSize,
+  ): void {
+      this.dialogs
+          .open(content, {
+              label: 'What a cool library set',
+              header,
+              size,
+          })
+          .subscribe();
   }
 }

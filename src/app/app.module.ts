@@ -1,7 +1,8 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
 import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TUI_SANITIZER } from "@taiga-ui/core";
-import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule  } from "@taiga-ui/kit";
+import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule, TuiInputPasswordModule, TuiPromptModule } from "@taiga-ui/kit";
 import { TuiTableModule, TuiReorderModule } from "@taiga-ui/addon-table"
+import { FormsModule } from '@angular/forms';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -31,6 +32,8 @@ import { MdbValidationModule } from 'mdb-angular-ui-kit/validation';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
+import { ProfileComponent } from './profile/profile.component';
+import { MyProfileComponent } from './my-profile/my-profile.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,8 @@ import { AngularSplitModule } from 'angular-split';
     SnippetsComponent,
     RepoPresentationComponent,
     ModalComponent,
+    ProfileComponent,
+    MyProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,6 +91,9 @@ import { AngularSplitModule } from 'angular-split';
     TuiMarkerIconModule,
     TuiReorderModule,
     TuiHostedDropdownModule,
+    TuiInputPasswordModule,
+    FormsModule,
+    TuiPromptModule,
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]

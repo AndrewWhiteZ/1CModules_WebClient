@@ -13,9 +13,9 @@
           (click)="onClick($event)">
         </button>
 
-        <form class="b-form" [formGroup]="testForm" style="width: 100%;">
+        <form class="b-form" [formGroup]="searchForm" style="width: 100%;">
           <tui-input 
-            formControlName="testValue"
+            formControlName="searchValue"
             tuiTextfieldSize="m"
             [tuiTextfieldCleaner]="true"
             [tuiTextfieldLabelOutside]="true"
@@ -31,30 +31,126 @@
       </div>
 
       <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none justify-content-end">
-        <div class="col-md-3 text-end" *ngIf="!authorized">
+        <div class="col-md-3 text-end" *ngIf="authorizedUser == null">
           <button
             tuiButton
-            appearance="primary"
             size="m"
             type="button"
-            [shape]="null"
-            class="tui-space_left-3 tui-space_right-1 tui-space_top-1 tui-space_bottom-1"
-            (click)="openLoginModal()">
-          Войти
+            class="tui-space_right-2 tui-space_bottom"
+            (click)="onAuthClick(content, header, 'm')"
+          >
+            Войти
           </button>
+
+          <ng-template #header>
+            <div class="px-4 pt-2" style="width: 100%; background-color: white;">
+              <tui-tabs [(activeItemIndex)]="activeTab" (activeItemIndexChange)="onActiveTabChange()">
+                <button tuiTab class="px-2">
+                  <b>Авторизация</b>
+                </button>
+                <button tuiTab class="px-2">
+                  <b>Регистрация</b>
+                </button>
+              </tui-tabs>
+            </div>
+          </ng-template>
+
+          <ng-template #content let-observer>
+            <form [formGroup]="authForm" (ngSubmit)="authorize()" *ngIf="activeTab == 0">
+              <div class="tui-row tui-row_sme">
+                <div class="tui-col_12">
+                  <div class="tui-form__row">
+                    <tui-input tuiTextfield [tuiTextfieldCleaner]="true" tuiAutoFocus formControlName="loginValue">
+                      Логин
+                    </tui-input>
+                  </div>
+                  <div class="tui-form__row">
+                    <tui-input-password tuiTextfield formControlName="passwordValue">
+                      Пароль
+                    </tui-input-password>
+                  </div>
+                  <div class="tui-form__buttons tui-form__buttons_align_center">
+                    <button
+                      tuiButton
+                      size="l"
+                      type="submit"
+                      class="tui-form__button"
+                    >
+                      Войти
+                    </button>
+                    <button
+                      tuiButton
+                      type="button"
+                      appearance="flat"
+                      size="l"
+                      class="tui-form__button"
+                      (click)="closeDialog()"
+                    >
+                      Отмена
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <form [formGroup]="regForm" (ngSubmit)="register()" *ngIf="activeTab == 1">
+              <div class="tui-row tui-row_sme">
+                <div class="tui-col_12">
+                  <div class="tui-form__row">
+                    <tui-input tuiTextfield [tuiTextfieldCleaner]="true" formControlName="usernameValue">
+                      Логин
+                    </tui-input>
+                  </div>
+                  <div class="tui-form__row">
+                    <tui-input tuiTextfield [tuiTextfieldCleaner]="true" formControlName="fullNameValue">
+                      Имя пользователя
+                    </tui-input>
+                  </div>
+                  <div class="tui-form__row">
+                    <tui-input tuiTextfield [tuiTextfieldCleaner]="true" formControlName="emailValue">
+                      Email
+                    </tui-input>
+                  </div>
+                  <div class="tui-form__row">
+                    <tui-input-password tuiTextfield formControlName="passwordValue">
+                      Пароль
+                    </tui-input-password>
+                  </div>
+                  <div class="tui-form__buttons tui-form__buttons_align_center">
+                    <button
+                      tuiButton
+                      size="l"
+                      type="submit"
+                      class="tui-form__button"
+                    >
+                      Отправить
+                    </button>
+                    <button
+                      tuiButton
+                      type="button"
+                      appearance="flat"
+                      size="l"
+                      class="tui-form__button"
+                      (click)="closeDialog()"
+                    >
+                      Отмена
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </ng-template>
         </div>
-        <div class="dropdown" *ngIf="authorized">
-          <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>mdo</strong>
+        <div class="tui-space_right-2" *ngIf="authorizedUser != null">
+          <a tuiLink routerLink="/profile/me" style="font-size: 16px;" class="d-flex align-items-center justify-content-end">
+            <tui-avatar
+              text="Andrew White"
+              size="s"
+              class="tui-space_right-2 tui-space_left-1"
+              [rounded]="true"
+              [autoColor]="true"
+            ></tui-avatar>
+            {{ authorizedUser.fullName }}
           </a>
-          <!-- <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul> -->
         </div>
       </div>
     </header>

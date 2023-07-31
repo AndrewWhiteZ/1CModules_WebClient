@@ -13,7 +13,6 @@ import { map } from 'rxjs/operators';
 export class RepoRequestService {
 
   constructor(private http: HttpClient) { 
-
   }
 
   httpResponseHandler(observable: Observable<any>): any {
@@ -59,4 +58,13 @@ export class RepoRequestService {
       });
     }));
   }
+
+  lockModule(repoId: string, pathToModule: string): Observable<any> {
+    return this.http.post(`/api/v1/repos/${repoId}/lock/${pathToModule}`, {});
+  }
+
+  unlockModule(repoId: string, pathToModule: string): Observable<any> {
+    return this.http.delete(`/api/v1/repos/${repoId}/lock/${pathToModule}`, {});
+  }
+
 }

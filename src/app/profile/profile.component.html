@@ -1,0 +1,13 @@
+<tui-island class="d-flex justify-content-between" size="l">
+    <div>
+        <h1>{{ user.fullName }}</h1>
+        <h3>Логин: {{ user.name }} ID: {{ user.id }}</h3>
+        <p>{{ user.createdOn }}</p>
+    </div>
+    <tui-avatar
+        [text]="user.fullName"
+        size="xxl"
+        [rounded]="true"
+        [autoColor]="true"
+    ></tui-avatar>
+</tui-island>

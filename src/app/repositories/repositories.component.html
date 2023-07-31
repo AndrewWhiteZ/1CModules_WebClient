@@ -103,9 +103,18 @@
               <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
               <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
             </div>
-            <span>Создатель: {{ repo.creator.fullName }}</span>
+            <a tuiLink [routerLink]="'/profile/' + repo.creator.id" style="font-size: 18px;" class="d-flex align-items-center">
+              <tui-avatar
+                [text]="repo.creator.fullName"
+                size="xs"
+                class="tui-space_right-2"
+                [rounded]="true"
+                [autoColor]="true"
+              ></tui-avatar>
+              {{ repo.creator.fullName }}
+            </a>
           </div>
-          <div class="d-flexalign-items-center">
+          <div class="d-flex align-items-center">
             <button
               tuiIconButton
               appearance="primary"
@@ -310,15 +319,15 @@
             ></tui-tag>
           </td>
           <td *tuiCell="'creator'" tuiTd>
-            <div class="d-flex align-items-center">
-              <tui-avatar
-                [text]="repo.creator.fullName"
-                size="s"
-                class="tui-space_right-3"
-                [rounded]="true"
-                [autoColor]="true"
-              ></tui-avatar>
-              <a tuiLink routerLink="/components/link" style="font-size: 18px;">
+            <div>
+              <a tuiLink [routerLink]="'/profile/' + repo.creator.id" style="font-size: 18px;" class="d-flex align-items-center">
+                <tui-avatar
+                  [text]="repo.creator.fullName"
+                  size="s"
+                  class="tui-space_right-3"
+                  [rounded]="true"
+                  [autoColor]="true"
+                ></tui-avatar>
                 {{ repo.creator.fullName }}
               </a>
             </div>

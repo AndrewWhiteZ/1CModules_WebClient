@@ -9,7 +9,6 @@ export class CommitShort {
     constructor(id: string, message: string, when: Date) {
         this.id = id;
         this.message = message;
-        console.log(when);
         this.when = new DateTime(
             when.toString().slice(0, 4),
             when.toString().slice(5, 7),
