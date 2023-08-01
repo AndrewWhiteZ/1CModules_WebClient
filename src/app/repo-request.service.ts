@@ -67,4 +67,22 @@ export class RepoRequestService {
     return this.http.delete(`/api/v1/repos/${repoId}/lock/${pathToModule}`, {});
   }
 
+  getModuleLastCommitInfo(repoId: string, pathToModule: string) {
+    return this.http.get(`/api/v1/repos/${repoId}/files/${pathToModule}`);
+  }
+
+  getModuleCommitInfo(repoId: string, pathToModule: string, version: string) {
+    return this.http.get(`/api/v1/repos/${repoId}/files/${pathToModule}?rev=${version}`);
+  }
+
+  downloadCommit(url: string): Observable<Blob> {
+    return this.http.get(url, {
+      responseType: 'blob'
+    })
+  }
+
+  // downloadCommit(repoId: string, pathToModule: string, version: string = '') {
+  //   return this.http.get(`/api/v1/repos/${repoId}/files/${pathToModule}?rev=${version}`)
+  // }
+
 }

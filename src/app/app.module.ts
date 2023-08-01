@@ -1,6 +1,6 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TUI_SANITIZER } from "@taiga-ui/core";
-import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule, TuiInputPasswordModule, TuiPromptModule } from "@taiga-ui/kit";
+import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TuiDataListModule, TUI_SANITIZER } from "@taiga-ui/core";
+import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule, TuiInputPasswordModule, TuiPromptModule, TuiStepperModule, TuiInputFilesModule, TuiInputTagModule, TuiTextAreaModule } from "@taiga-ui/kit";
 import { TuiTableModule, TuiReorderModule } from "@taiga-ui/addon-table"
 import { FormsModule } from '@angular/forms';
 import { TuiLetModule } from '@taiga-ui/cdk';
@@ -94,6 +94,11 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
     TuiInputPasswordModule,
     FormsModule,
     TuiPromptModule,
+    TuiStepperModule,
+    TuiInputFilesModule,
+    TuiInputTagModule,
+    TuiDataListModule,
+    TuiTextAreaModule,
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]

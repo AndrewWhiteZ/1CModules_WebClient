@@ -24,42 +24,48 @@
         </button>
       </tui-tabs>
 
-      <tui-breadcrumbs
+      <!-- <tui-breadcrumbs
         size="l"
         class="tui-space_top-3"
       >
-        <ng-container *ngFor="let pathPart of currentPath">
-            <a
-                *tuiItem
-                tuiLink
-            >
-              {{ pathPart }}
-            </a>
+        <ng-container *ngFor="let module of modulesTree">
+          <a *tuiItem tuiLink>
+            {{ module.name }}
+          </a>
         </ng-container>
-        <!-- <ng-container>
+      </tui-breadcrumbs> -->
+
+      <tui-breadcrumbs [style.color]="'red'" size="l" class="tui-space_top-3">
+        <tui-hosted-dropdown
+          *tuiItem
+          [content]="breadcrumbContent"
+        >
+          <button
+            tuiIconButton
+            icon="tuiIconMoreHorizontal"
+            size="s"
+            appearance="secondary"
+            title="Ещё"
+          ></button>
+          <ng-template #breadcrumbContent>
+            <tui-data-list>
+              <a
+                *ngFor="let module of modulesTree.slice(0, modulesTree.length - maxBreadcrumbElements)"
+                tuiOption
+              >
+                {{ module.name }}
+              </a>
+            </tui-data-list>
+          </ng-template>
+        </tui-hosted-dropdown>
+        <ng-container *ngFor="let module of modulesTree.slice(modulesTree.length - maxBreadcrumbElements)">
           <a
             *tuiItem
             tuiLink
           >
-            First
+            {{ module.name }}
           </a>
         </ng-container>
-        <ng-container>
-          <a
-            *tuiItem
-            tuiLink
-          >
-            First
-          </a>
-        </ng-container>
-        <ng-container>
-          <a
-            *tuiItem
-            tuiLink
-          >
-            First
-          </a>
-        </ng-container> -->
       </tui-breadcrumbs>
 
       <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
@@ -81,7 +87,7 @@
     
     <div *ngIf="activeOutputFormat == 0" style="overflow: overlay;">
       <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-        <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory($event)">
+        <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
           <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex">
               <div class="tui-space_right-3">
@@ -94,12 +100,12 @@
             <div>
               <button
                 tuiIconButton
-                appearance="secondary"
+                appearance="primary"
                 size="s"
                 type="button"
                 shape="rounded"
                 icon="tuiIconArrowUpCircle"
-                (click)="moveToParentDirectory($event)">
+                (click)="moveToParentDirectory()">
               </button>
             </div>
           </div>
@@ -140,7 +146,7 @@
             <div *ngIf="!!item.files">
               <button
                 tuiIconButton
-                appearance="secondary"
+                appearance="primary"
                 size="s"
                 type="button"
                 shape="rounded"
@@ -169,7 +175,7 @@
                 shape="rounded"
                 class="tui-space_left-3"
                 icon="tuiIconDownloadLarge"
-                (click)="downloadLastCommit(item)">
+                (click)="downloadLastCommit($event, item)">
               </button>
             </div>
             <div class="d-flex align-items-center tui-space_top-3 gap-2">
@@ -230,7 +236,7 @@
         type="button"
         icon="tuiIconUploadLarge"
         class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
-        (click)="commit($event)">
+        (click)="createCommit(dialogContent, dialogHeader, 'm')">
         Сделать коммит
       </button>
       <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%" [formGroup]="commitSearchForm">
@@ -286,7 +292,8 @@
                 size="s"
                 type="button"
                 shape="rounded"
-                icon="tuiIconDownload">
+                icon="tuiIconDownload"
+                (click)="downloadCommit($event, commit)">
               </button>
               <button
                 tuiIconButton
@@ -303,3 +310,214 @@
     </div>
   </tui-island>
 </div>
+
+<ng-template #dialogHeader>
+  <div class="px-3 pt-3" style="width: 100%; background-color: white;">
+    <tui-stepper [(activeItemIndex)]="activeStepperItem">
+      <button tuiStep>Выбор файла</button>
+      <button tuiStep>Местоположение</button>
+      <button tuiStep>Параметры</button>
+    </tui-stepper>
+  </div>
+</ng-template>
+
+<ng-template #dialogContent>
+  <form [formGroup]="commitForm" (ngSubmit)="commit()">
+    <div class="tui-row tui-row_sme">
+      <div class="tui-col_12">
+        <div class="tui-form__row" *ngIf="activeStepperItem == 0">
+          <tui-input-files 
+            [formControl]="fileValue"
+            (reject)="onReject($event)"
+          >
+            <ng-template let-dragged>
+              <div
+                *ngIf="dragged; else base"
+                class="content"
+              >
+                <tui-marker-icon
+                  mode="link"
+                  src="tuiIconDropletLarge"
+                ></tui-marker-icon>
+                <div>Отпустите файл</div>
+              </div>
+              <ng-template #base>
+                <div class="content py-5">
+                  <tui-marker-icon
+                    mode="link"
+                    src="tuiIconUploadCloudLarge"
+                  ></tui-marker-icon>
+                  <div class="tui-space_top-3">
+                    Перетащите файл в пределы рамки или нажмите на иконку для выбора
+                  </div>
+                </div>
+              </ng-template>
+            </ng-template>
+          </tui-input-files>
+
+          <tui-files class="tui-space_top-3">
+            <tui-file
+              *ngIf="loadedFiles$ | async as file"
+              [file]="file"
+              [showDelete]="fileValue.enabled"
+              (removed)="removeFile()"
+            ></tui-file>
+        
+            <tui-file
+              *ngIf="rejectedFiles$ | async as file"
+              state="error"
+              [file]="file"
+              [showDelete]="fileValue.enabled"
+              (removed)="clearRejected()"
+            ></tui-file>
+        
+            <tui-file
+              *ngIf="loadingFiles$ | async as file"
+              state="loading"
+              [file]="file"
+              [showDelete]="fileValue.enabled"
+            ></tui-file>
+          </tui-files>
+          
+        </div>
+        <div class="tui-form__row" *ngIf="activeStepperItem == 1">
+          <div class="d-flex">
+            <tui-input 
+              tuiTextfield 
+              formControlName="pathValue"
+              [tuiTextfieldLabelOutside]="true"
+              class="tui-space_bottom-3">
+              Путь к файлу
+            </tui-input>
+            <button
+              tuiButton
+              size="m"
+              type="button"
+              class="tui-form__button"
+            >
+              Новая папка
+            </button>
+          </div>
+          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="true">
+            <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFolderMinusLarge"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-3">
+                    <b>...</b>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowUpCircle"
+                    (click)="moveToParentDirectory()">
+                  </button>
+                </div>
+              </div>
+            </tui-accordion-item>
+            <tui-accordion-item *ngFor="let item of data.files" [showArrow]="false" size="s" (click)="chooseItemForUpload(item)" (dblclick)="moveToChildDirectory(item)">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFileLarge" *ngIf="!item.files"></tui-svg>
+                    <tui-svg src="tuiIconFolderPlusLarge" *ngIf="!!item.files"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-4">
+                    <b>{{ item.name }}</b>
+                  </div>
+                </div>
+                <div *ngIf="!!item.files">
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowDownCircle"
+                    (click)="moveToChildDirectory(item)">
+                  </button>
+                </div>
+              </div>
+            </tui-accordion-item>
+          </tui-accordion>
+        </div>
+        <div class="tui-form__row" *ngIf="activeStepperItem == 2">
+          <tui-input 
+            tuiTextfield 
+            formControlName="filenameValue"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Название файла
+          </tui-input>
+          <tui-input 
+            tuiTextfield 
+            formControlName="descriptionValue" 
+            class="tui-space_top-3"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Описание
+          </tui-input>
+          <tui-input 
+            tuiTextfield 
+            formControlName="commitMessageValue" 
+            class="tui-space_top-3"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Сообщение коммита
+          </tui-input>
+          <tui-input-tag
+            class="b-form tui-space_top-3"
+            tuiTextfieldSize="l"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true"
+            [expandable]="true"
+            [editable]="true"
+            [uniqueTags]="true"
+            [separator]="';'"
+            formControlName="commitTagsValue"
+          >
+            Список меток коммита через ';'
+          </tui-input-tag>
+        </div>
+        <div class="tui-form__buttons tui-form__buttons_align_center">
+          <button
+            tuiButton
+            type="button"
+            appearance="flat"
+            size="l"
+            class="tui-form__button"
+            (click)="closeDialog()"
+          >
+            Отмена
+          </button>
+          <button
+            tuiButton
+            size="l"
+            type="button"
+            class="tui-form__button"
+            *ngIf="activeStepperItem < 2"
+            (click)="activeStepperItem = activeStepperItem + 1"
+          >
+            Далее
+          </button>
+          <button
+            tuiButton
+            size="l"
+            type="submit"
+            class="tui-form__button"
+            *ngIf="activeStepperItem == 2"
+          >
+            Загрузить
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
