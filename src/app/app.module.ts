@@ -34,6 +34,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import { ProfileComponent } from './profile/profile.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
+import { RepoEditComponent } from './repo-edit/repo-edit.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
     ModalComponent,
     ProfileComponent,
     MyProfileComponent,
+    RepoEditComponent,
   ],
   imports: [
     BrowserModule,
