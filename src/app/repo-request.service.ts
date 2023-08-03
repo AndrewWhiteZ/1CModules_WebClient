@@ -5,7 +5,10 @@ import { catchError, retry } from 'rxjs/operators';
 import { Repository } from './Repository';
 import { Module } from './Module';
 import { Commit } from './Commit';
+import { User } from './User';
 import { map } from 'rxjs/operators';
+import { AccessLevel } from './AccessLevel';
+import { Profile } from './Profile';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +49,26 @@ export class RepoRequestService {
       let modulesList = data["data"]["files"];
       return modulesList.map(function(module: any): Module {
         return new Module(module.name, module.type, module.lastCommit, module.locked, module.files);
+      });
+    }));
+  }
+
+  getRepoInfo(repoId: string) {
+    return this.http.get(`/api/v1/repos/${repoId}`);
+  }
+
+  getRepoProfiles(repoId: string) {
+    return this.http.get(`/api/v1/repos/${repoId}/users`).pipe(map((data: any) => {
+
+      let dataList = data["data"];
+
+      return dataList.map(function(profile: any): Profile {
+        let user = profile["user"];
+        let accessLevel = profile["accessLevel"];
+        return new Profile(
+          new User(user.id, user.username, user.fullName, user.createdOn, null), 
+          new AccessLevel(accessLevel.canView, accessLevel.canCommit, accessLevel.canManage, accessLevel.roleName)
+        );
       });
     }));
   }

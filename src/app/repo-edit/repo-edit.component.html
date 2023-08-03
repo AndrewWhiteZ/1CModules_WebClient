@@ -1,3 +1,155 @@
-<tui-island>
-    <h3></h3>
+<tui-island class="justify-content-between" size="l">
+  <tui-island class="justify-content-between tui-space_bottom-3" size="m">
+    <h1>{{ repo.name }}</h1>
+    <h3>{{ repo.isPublic }}</h3>
+    <p>{{ repo.description }}</p>
+  </tui-island>
+  <tui-island class="p-0">
+    <header class="d-flex border-bottom justify-content-between px-4 pb-2">
+      <tui-tabs>
+        <button
+          tuiTab
+          class="px-2"
+        >
+          <tui-svg
+            src="tuiIconListLarge"
+            class="tui-space_right-2"
+          ></tui-svg>
+          Список
+        </button>
+        <button
+          tuiTab
+          class="px-2"
+        >
+          <tui-svg
+            src="tuiIconTableLarge"
+            class="tui-space_right-2"
+          ></tui-svg>
+          Таблица
+        </button>
+      </tui-tabs>
+      <div>
+        <button
+          tuiButton
+          appearance="secondary"
+          size="m"
+          type="button"
+          icon="tuiIconUserPlusLarge"
+          class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
+          (click)="createNewUser(dialogContent, 'm')">
+          Добавить пользователя
+        </button>
+      </div>
+    </header>
+
+    <div style="overflow: overlay;">
+      <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+        <tui-accordion-item *ngFor="let profile of repoProfiles, let i = index" [showArrow]="false" size="m">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center tui-space_right-3 gap-3" style="width: 30%; overflow: hidden;">
+              <tui-marker-icon
+                mode="warning"
+                size="s"
+                src="tuiIconCodesandboxLarge"
+                *ngIf="profile.accessLevel.roleName == 'MANAGER'"
+              ></tui-marker-icon>
+              <tui-marker-icon
+                mode="success"
+                size="s"
+                src="tuiIconCodepenLarge"
+                *ngIf="profile.accessLevel.roleName == 'CONTRIBUTOR'"
+              ></tui-marker-icon>
+              <tui-marker-icon
+                mode="link"
+                size="s"
+                src="tuiIconHexagonLarge"
+                *ngIf="profile.accessLevel.roleName == 'VIEWER'"
+              ></tui-marker-icon>
+              <a tuiLink [routerLink]="'/profile/' + profile.user.id" style="font-size: 18px;" class="d-flex align-items-center">
+                <tui-avatar
+                  [text]="profile.user.fullName"
+                  size="s"
+                  class="tui-space_right-2"
+                  [rounded]="true"
+                  [autoColor]="true"
+                ></tui-avatar>
+                <b>{{ profile.user.fullName }}</b>
+              </a>
+            </div>
+            <div class="tui-space_right-3">
+              {{ profile.user.name }}
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                tuiIconButton
+                appearance="secondary-destructive"
+                size="m"
+                type="button"
+                shape="rounded"
+                icon="tuiIconUserXLarge"
+                (click)="removeUserFromRepo(profile, i)"
+                *ngIf="profile.user.id != repo.creator.id">
+              </button>
+            </div>
+          </div>
+        </tui-accordion-item>
+      </tui-accordion>
+    </div>
+  </tui-island>
 </tui-island>
+
+<ng-template #dialogContent>
+  <form [formGroup]="addNewUserForm" (ngSubmit)="addNewUser()">
+    <div class="tui-row tui-row_sme">
+      <div class="tui-col_12">
+        <div class="tui-form__row">
+          <tui-input 
+            tuiTextfield
+            tuiAutoFocus
+            formControlName="userIdValue"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true"
+            class="tui-space_top-3">
+            ID пользователя
+          </tui-input>
+        </div>
+        <div class="tui-form__row">
+          <tui-select
+              formControlName="dropdownValue"
+              [valueContent]="personValueContent"
+          >
+              Выберите роль
+              <tui-data-list-wrapper
+                  *tuiDataList
+                  [items]="roles"
+              ></tui-data-list-wrapper>
+          </tui-select>
+          <ng-template
+              #personValueContent
+              let-data
+          >
+              <div class="uppercase-name">{{ data }}</div>
+          </ng-template>
+        </div>
+        <div class="tui-form__buttons tui-form__buttons_align_center">
+          <button
+            tuiButton
+            type="button"
+            appearance="flat"
+            size="l"
+            class="tui-form__button"
+            (click)="closeDialog()">
+            Отмена
+          </button>
+          <button
+            tuiButton
+            size="l"
+            type="submit"
+            class="tui-form__button">
+            Добавить
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>

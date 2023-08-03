@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { RepoRequestService } from '../repo-request.service';
+import { TransferDataService } from '../transfer-data.service';
 import { Repository } from '../Repository';
 import { TUI_ARROW } from '@taiga-ui/kit';
 
@@ -19,7 +20,7 @@ export class RepositoriesComponent {
   arrow = TUI_ARROW;
   columns = ['name', 'isPublic', 'tags', 'creator', 'description', 'actions'];
 
-  constructor(repoRequestService: RepoRequestService, private cdr: ChangeDetectorRef) {
+  constructor(repoRequestService: RepoRequestService, private cdr: ChangeDetectorRef, private dataService: TransferDataService) {
     this.repoRequestService = repoRequestService;
   }
   
@@ -47,6 +48,10 @@ export class RepositoriesComponent {
   onFormatTabChange(event: any):void {
     this.activeFormatTab = event.index;
     this.cdr.detectChanges();
+  }
+
+  passInfo(repo: Repository) {
+    this.dataService.updateCurrentData(repo);
   }
 
   // remove(item: Repository): void {

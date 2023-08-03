@@ -33,4 +33,12 @@ export class ProfileRequestService {
       return new User(profile["id"], profile["username"], profile["fullName"], profile["createdOn"], null);
     }));
   }
+
+  addNewUser(repoId: string, userId: string, role: string) {
+    return this.http.post(`/api/v1/repos/${repoId}/users`, {'userId': userId, 'role': role});
+  }
+
+  removeUserFromRepo(repoId: string, userId: string): Observable<any> {
+    return this.http.delete(`/api/v1/repos/${repoId}/users/${userId}`);
+  }
 }
