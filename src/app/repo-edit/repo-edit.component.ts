@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepoEditComponent {
+  editing = false;
 
   dialogSubscription: Subscription = new Subscription;
   repoId: string = '';
@@ -29,6 +30,13 @@ export class RepoEditComponent {
 
   availableRoles: Map<string, string> = new Map([['Администратор', 'MANAGER'], ['Участник', 'CONTRIBUTOR'], ['Гость', 'VIEWER']]);
   roles: Array<string> = [...Array.from(this.availableRoles.keys())];
+
+  editRepoForm = new FormGroup({
+    nameValue: new FormControl("", Validators.required),
+    descriptionValue: new FormControl("", Validators.required),
+    tagsValue: new FormControl("", Validators.required),
+    isPrivateValue: new FormControl(false, Validators.required),
+  });
 
   addNewUserForm = new FormGroup({
     userIdValue: new FormControl("", Validators.required),
@@ -71,16 +79,42 @@ export class RepoEditComponent {
       this.addNewUserForm.controls.userIdValue.value!, 
       this.availableRoles.get(this.addNewUserForm.controls.dropdownValue.value!)!
     ).subscribe((data: any) => {
-      const profiles: Profile[] = [...data["data"]];
-      const profile = profiles.at(profiles.length - 1)!;
-      this.alerts.open(`Пользователь <b>${profile.user.fullName}</b> успешно добавлен в список пользователей репозитория`, { 
+      this.repoProfiles = [...data["data"]];
+      this.alerts.open(`Пользователь успешно добавлен в репозиторий`, { 
         label: 'Добавлен', 
         status: TuiNotification.Success, 
         autoClose: false
       }).subscribe();
       this.dialogSubscription.unsubscribe();
-      this.repoProfiles.push({...profile});
       this.cdr.detectChanges();
+    });
+  }
+
+  editRepoRequest() {
+    this.repoRequest.patchRepo(this.repoId, { 
+      "repoName": this.editRepoForm.controls.nameValue.value,
+      "description": this.editRepoForm.controls.descriptionValue.value,
+      "tags": this.editRepoForm.controls.tagsValue.value,
+      "isPrivate": this.editRepoForm.controls.isPrivateValue.value,
+    }).subscribe((data: any) => {
+      if(data["status"] == 0) {
+        this.alerts.open(`Репозиторий <b>${this.repo.name}</b> успешно изменён`, {
+          label: 'Изменен', 
+          status: TuiNotification.Success, 
+          autoClose: false
+        }).subscribe();
+        this.repo = data["data"];
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      } else {
+        this.alerts.open(data["message"], {
+          label: 'Ошибка', 
+          status: TuiNotification.Error, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -99,12 +133,14 @@ export class RepoEditComponent {
     .subscribe(response => {
       if(response) {
         this.profileRequest.removeUserFromRepo(this.repoId, profile.user.id).subscribe((data: any) => {
-          if(200 <= data["status"] && data["status"] < 300) {
-            this.alerts.open(`Пользователь <b>${data["data"]["user"]["fullName"]}</b> успешно удален из списка пользователей репозитория`, { 
+          if(data["status"] == 0) {
+
+            this.alerts.open(`Пользователь <b>${profile.user.fullName}</b> успешно удален из списка пользователей репозитория`, { 
               label: 'Удален', 
               status: TuiNotification.Success, 
               autoClose: false
             }).subscribe();
+            this.dialogSubscription.unsubscribe();
             this.repoProfiles.splice(index, 1);
             this.cdr.detectChanges();
           } else {
@@ -127,6 +163,19 @@ export class RepoEditComponent {
       content,
       {
         label: 'Добавление пользователя',
+        size,
+      },
+    ).subscribe();
+  }
+
+  editRepo(
+    content: PolymorpheusContent<TuiDialogContext>,
+    size: TuiDialogSize): void
+  {
+    this.dialogSubscription = this.dialogs.open(
+      content,
+      {
+        label: 'Изменение репозитория',
         size,
       },
     ).subscribe();

@@ -56,7 +56,16 @@ export class RepoPresentationComponent {
     pathValue: new FormControl(``),
   });
 
-  data: Module = {
+  editModuleForm = new FormGroup({
+    descriptionValue: new FormControl(``, Validators.required),
+    tagsValue: new FormControl(``, Validators.required),
+  });
+  
+  editCommitForm = new FormGroup({
+    tagsValue: new FormControl(``, Validators.required),
+  });
+
+  module: Module = {
     name: '...',
     type: 'directory',
     lastCommit: new CommitShort('_1', 'root_commit', new Date()),
@@ -64,7 +73,7 @@ export class RepoPresentationComponent {
     files: this.modulesList,
   }
 
-  modulesTree: Module[] = [this.data];
+  modulesTree: Module[] = [this.module];
 
   // readonly file: TuiFileLike = {
   //   name: 'custom.txt',
@@ -96,8 +105,8 @@ export class RepoPresentationComponent {
 
   showModules() {
     this.repoRequestService.getModulesByRepoId(this.repoId).subscribe({next:(data: Module[]) => { 
-      this.data.files = data;
-      this.modulesTree[0] = { ...this.data };
+      this.module.files = data;
+      this.modulesTree[0] = { ...this.module };
       this.cdr.detectChanges();
     }});
   }
@@ -194,8 +203,55 @@ export class RepoPresentationComponent {
     });
   }
 
-  editFile(module: Module): void {
+  editFile(): void {
+    this.repoRequestService.patchModule(this.repoId, this.currentPath.join(), { 
+      "description": this.editModuleForm.controls.descriptionValue.value,
+      "tags": this.editModuleForm.controls.tagsValue.value,
+    }).subscribe((data: any) => {
+      if(data["status"] == 0) {
+        this.alerts.open(`Файл успешно изменён`, {
+          label: 'Изменен', 
+          status: TuiNotification.Success, 
+          autoClose: false
+        }).subscribe();
+        this.modulesList = data["data"];
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      } else {
+        this.alerts.open(data["message"], {
+          label: 'Ошибка', 
+          status: TuiNotification.Error, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
+  editCommit(commit: Commit): void {
+    this.repoRequestService.patchCommit(this.repoId, commit.id, { 
+      "tags": this.editModuleForm.controls.tagsValue.value,
+    }).subscribe((data: any) => {
+      if(data["status"] == 0) {
+        this.alerts.open(`Коммит успешно изменён`, {
+          label: 'Изменен', 
+          status: TuiNotification.Success, 
+          autoClose: false
+        }).subscribe();
+        this.commitsList = data["data"];
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      } else {
+        this.alerts.open(data["message"], {
+          label: 'Ошибка', 
+          status: TuiNotification.Error, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   infoFile(module: Module): void {
@@ -227,22 +283,22 @@ export class RepoPresentationComponent {
   moveToParentDirectory(): void {
     if(this.modulesTree.length > 1) {
       const currentModule = this.modulesTree[this.modulesTree.length - 2];
-      this.data = currentModule;
+      this.module = currentModule;
       this.modulesTree.pop();
     }
   }
 
   moveToChildDirectory(module: Module): void {
     if(module.type == "directory") {
-      this.data = module;
-      this.modulesTree[this.modulesTree.length] = { ...this.data };
+      this.module = module;
+      this.modulesTree[this.modulesTree.length] = { ...this.module };
     }
   }
 
   moveToDirectory(module: Module): void {
     let currentModule = this.modulesTree[this.modulesTree.length - 2];
     while (currentModule.name != module.name) {
-      this.data = currentModule;
+      this.module = currentModule;
       this.modulesTree.pop();
       currentModule = this.modulesTree[this.modulesTree.length - 2];
     }
@@ -273,6 +329,35 @@ export class RepoPresentationComponent {
         finalize(() => this.loadingFiles$.next(null)),
       );
   }
+
+  openEditModuleDialog(
+    content: PolymorpheusContent<TuiDialogContext>,
+    size: TuiDialogSize): void
+  {
+    this.dialogSubscription = this.dialogs.open(
+      content,
+      {
+        label: 'Изменение файла',
+        size,
+      },
+    ).subscribe();
+  }
+
+  openEditCommitDialog(
+    content: PolymorpheusContent<TuiDialogContext>,
+    size: TuiDialogSize,
+    commit: Commit): void
+  {
+    this.dialogSubscription = this.dialogs.open(
+      content,
+      {
+        data: commit,
+        label: 'Изменение коммита',
+        size,
+      },
+    ).subscribe();
+  }
+
 
   readonly handler: TuiHandler<Module, readonly Module[]> = item => item.files || EMPTY_ARRAY;
 }

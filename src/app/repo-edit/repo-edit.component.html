@@ -1,7 +1,36 @@
 <tui-island class="justify-content-between" size="l">
   <tui-island class="justify-content-between tui-space_bottom-3" size="m">
-    <h1>{{ repo.name }}</h1>
-    <h3>{{ repo.isPublic }}</h3>
+    <div class="d-flex justify-content-between">
+      <div class="d-flex align-items-center">
+        <h1 class="d-flex gap-2">
+          <tui-marker-icon
+          mode="link"
+          src="tuiIconGlobeLarge"
+          size="s"
+          *ngIf="repo.isPublic"
+        ></tui-marker-icon>
+        <tui-marker-icon
+          mode="link"
+          src="tuiIconEyeOffLarge"
+          size="s"
+          *ngIf="!repo.isPublic"
+        ></tui-marker-icon>
+          {{ repo.name }}
+        </h1>
+        <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="l" [value]="tag" class="tui-space_left-2" style="font-size: 16px;"></tui-tag>
+      </div>
+      <button
+        tuiButton
+        type="button"
+        appearance="secondary"
+        icon="tuiIconEditLarge"
+        size="m"
+        class="tui-space_right-3 tui-space_bottom-3"
+        (click)="editRepo(editRepoDialogContent, 'm')"
+      >
+        Изменить
+      </button>
+    </div>
     <p>{{ repo.description }}</p>
   </tui-island>
   <tui-island class="p-0">
@@ -36,7 +65,8 @@
           type="button"
           icon="tuiIconUserPlusLarge"
           class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
-          (click)="createNewUser(dialogContent, 'm')">
+          (click)="createNewUser(dialogContent, 'm')"
+          *ngIf="accessLevel.canManage">
           Добавить пользователя
         </button>
       </div>
@@ -147,6 +177,89 @@
             type="submit"
             class="tui-form__button">
             Добавить
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #editRepoDialogContent>
+  <form [formGroup]="editRepoForm" (ngSubmit)="editRepoRequest()">
+    <div class="tui-row tui-row_sme">
+      <div class="tui-col_12">
+        <div class="tui-form__row">
+          <tui-input 
+            tuiTextfield
+            tuiAutoFocus
+            formControlName="nameValue"
+            [tuiTextfieldCleaner]="true"
+            class="tui-space_top-3">
+            Название репозитория
+          </tui-input>
+        </div>
+        <div
+          tuiGroup
+          class="tui-form__row"
+          [adaptive]="true"
+          [collapsed]="true"
+        >
+          <tui-radio-block
+            contentAlign="right"
+            formControlName="isPrivateValue"
+            [item]="false"
+            size="l"
+          >
+            Публичный
+          </tui-radio-block>
+          <tui-radio-block
+            contentAlign="right"
+            formControlName="isPrivateValue"
+            [item]="true"
+            size="l"
+          >
+            Приватный
+          </tui-radio-block>
+        </div>
+        <div class="tui-form__row">
+          <tui-input-tag
+            tuiTextfieldSize="l"
+            [uniqueTags]="true"
+            separator=";"
+            formControlName="tagsValue"
+            class="tui-space_top-2"
+            [tuiTextfieldCleaner]="true"
+            [tuiTextfieldLabelOutside]="true"
+          >
+            Список меток, разделенных ';'
+          </tui-input-tag>
+        </div>
+        <div class="tui-form__row">
+          <tui-text-area
+            formControlName="descriptionValue"
+            class="field-medium"
+            [expandable]="true"
+            [maxLength]="255"
+          >
+            Описание репозитория
+          </tui-text-area>
+        </div>
+        <div class="tui-form__buttons tui-form__buttons_align_center">
+          <button
+            tuiButton
+            type="button"
+            appearance="flat"
+            size="l"
+            class="tui-form__button"
+            (click)="closeDialog()">
+            Отмена
+          </button>
+          <button
+            tuiButton
+            size="l"
+            type="submit"
+            class="tui-form__button">
+            Изменить
           </button>
         </div>
       </div>

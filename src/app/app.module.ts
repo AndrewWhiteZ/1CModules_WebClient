@@ -1,6 +1,6 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TuiDataListModule, TuiErrorModule, TUI_SANITIZER } from "@taiga-ui/core";
-import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule, TuiInputPasswordModule, TuiPromptModule, TuiStepperModule, TuiInputFilesModule, TuiInputTagModule, TuiTextAreaModule, TuiSelectModule, TuiDataListWrapperModule } from "@taiga-ui/kit";
+import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiSvgModule, TuiButtonModule, TuiTextfieldControllerModule, TuiHostedDropdownModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TUI_SANITIZER } from "@taiga-ui/core";
+import { TuiInputModule, TuiAccordionModule, TuiElasticContainerModule, TuiIslandModule, TuiActionModule, TuiTabsModule, TuiTagModule, TuiTilesModule, TuiTreeModule, TuiAvatarModule, TuiBreadcrumbsModule, TuiLineClampModule, TuiMarkerIconModule, TuiInputPasswordModule, TuiPromptModule, TuiStepperModule, TuiInputFilesModule, TuiInputTagModule, TuiTextAreaModule, TuiSelectModule, TuiDataListWrapperModule, TuiRadioBlockModule, TuiRadioGroupModule, TuiInputInlineModule, TuiToggleModule } from "@taiga-ui/kit";
 import { TuiTableModule, TuiReorderModule } from "@taiga-ui/addon-table"
 import { FormsModule } from '@angular/forms';
 import { TuiLetModule } from '@taiga-ui/cdk';
@@ -104,6 +104,11 @@ import { RepoEditComponent } from './repo-edit/repo-edit.component';
     TuiSelectModule, 
     TuiDataListWrapperModule,
     TuiErrorModule,
+    TuiRadioBlockModule,
+    TuiRadioGroupModule,
+    TuiGroupModule,
+    TuiInputInlineModule,
+    TuiToggleModule,
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]

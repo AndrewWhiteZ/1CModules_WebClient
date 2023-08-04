@@ -104,8 +104,19 @@ export class RepoRequestService {
     })
   }
 
-  // downloadCommit(repoId: string, pathToModule: string, version: string = '') {
-  //   return this.http.get(`/api/v1/repos/${repoId}/files/${pathToModule}?rev=${version}`)
-  // }
+  patchRepo(repoId: string, body: Object): Observable<any> {
+    return this.http.patch(`/api/v1/repos/${repoId}`, body);
+  }
 
+  patchModule(repoId: string, pathToModule: string, body: Object): Observable<any> {
+    return this.http.patch(`/api/v1/repos/${repoId}/files/${pathToModule}`, body);
+  }
+
+  patchCommit(repoId: string, commitId: string, body: Object) {
+    return this.http.patch(`/api/v1/repos/${repoId}/commitInfo/${commitId}`, body); 
+  }
+
+  deleteModule(repoId: string, pathToModule: string): Observable<any> {
+    return this.http.delete(`/api/v1/repos/${repoId}/files/${pathToModule}`);
+  }
 }
