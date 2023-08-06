@@ -29,6 +29,7 @@ export class RepoPresentationComponent {
   repoId: string = '';
   path: string = '';
   currentPath: string[] = [];
+  currentModule: Module | null = null;
   modulesList: Array<Module> = [];
   commitsList: Array<Commit> = [];
 
@@ -93,7 +94,10 @@ export class RepoPresentationComponent {
 
   openAccordionItem(module: Module) {
     this.currentPath = [module.name];
-    if(module.type == 'file') this.showCommits();
+    if(module.type == 'file') {
+      this.currentModule = module;
+      this.showCommits();
+    }
   }
 
   chooseItemForUpload(module: Module) {
@@ -112,13 +116,15 @@ export class RepoPresentationComponent {
   }
 
   showCommits() {
-    this.repoRequestService.getCommitsByRepoModule(this.repoId, this.currentPath.join('/')).subscribe({next:(data: Commit[]) => {
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
+    this.repoRequestService.getCommitsByRepoModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe({next:(data: Commit[]) => {
       this.commitsList = data;
     }});
   }
 
   lockFile(event: MouseEvent, module: Module): void {
     event.stopPropagation();
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
 
     const data: TuiPromptData = {
       content: `Вы действительно хотите захватить файл <b>${module.name}</b>?`,
@@ -133,7 +139,7 @@ export class RepoPresentationComponent {
     })
     .subscribe(response => {
       if(response) {
-        this.repoRequestService.lockModule(this.repoId, module.name).subscribe(data => {
+        this.repoRequestService.lockModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe(data => {
           this.alerts.open(`Файл <b>${module.name}</b> успешно захвачен`, { 
             label: 'Захвачен', 
             status: TuiNotification.Success, 
@@ -147,6 +153,7 @@ export class RepoPresentationComponent {
 
   unlockFile(event: MouseEvent, module: Module): void {
     event.stopPropagation();
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
 
     const data: TuiPromptData = {
       content: `Вы действиетльно хотите снять захват с файла <b>${module.name}</b>?`,
@@ -161,7 +168,7 @@ export class RepoPresentationComponent {
     })
     .subscribe(response => {
       if(response) {
-        this.repoRequestService.unlockModule(this.repoId, module.name).subscribe(data => {
+        this.repoRequestService.unlockModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe(data => {
           this.alerts.open(`Захват с файла <b>${module.name}</b> успешно снят`, { 
             label: 'Захват снят', 
             status: TuiNotification.Success, 
@@ -175,8 +182,8 @@ export class RepoPresentationComponent {
 
   downloadLastCommit(event: MouseEvent, module: Module): void {
     event.stopPropagation();
-    
-    this.repoRequestService.getModuleLastCommitInfo(this.repoId, module.name).subscribe((data: any) => {
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
+    this.repoRequestService.getModuleLastCommitInfo(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe((data: any) => {
       this.repoRequestService.downloadCommit(String(data["data"]["download"]["url"]).split(".206")[1]).subscribe(blob => {
         const a = document.createElement('a')
         const objectUrl = URL.createObjectURL(blob)
@@ -191,7 +198,8 @@ export class RepoPresentationComponent {
   downloadCommit(event: MouseEvent, commit: Commit): void {
     event.stopPropagation();
     
-    this.repoRequestService.getModuleCommitInfo(this.repoId, this.currentPath.join(), commit.id).subscribe((data: any) => {
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
+    this.repoRequestService.getModuleCommitInfo(this.repoId, pathToModule + '/' + this.currentModule?.name, commit.id).subscribe((data: any) => {
       this.repoRequestService.downloadCommit(String(data["data"]["download"]["url"]).split(".206")[1]).subscribe(blob => {
         const a = document.createElement('a')
         const objectUrl = URL.createObjectURL(blob)
@@ -204,7 +212,8 @@ export class RepoPresentationComponent {
   }
 
   editFile(): void {
-    this.repoRequestService.patchModule(this.repoId, this.currentPath.join(), { 
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
+    this.repoRequestService.patchModule(this.repoId, pathToModule + '/' + this.currentModule?.name, { 
       "description": this.editModuleForm.controls.descriptionValue.value,
       "tags": this.editModuleForm.controls.tagsValue.value,
     }).subscribe((data: any) => {
@@ -357,7 +366,6 @@ export class RepoPresentationComponent {
       },
     ).subscribe();
   }
-
 
   readonly handler: TuiHandler<Module, readonly Module[]> = item => item.files || EMPTY_ARRAY;
 }
