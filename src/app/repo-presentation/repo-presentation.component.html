@@ -190,15 +190,6 @@
               </button>
               <button
                 tuiButton
-                appearance="secondary"
-                size="m"
-                type="button"
-                icon="tuiIconInfo"
-                (click)="infoFile(item)">
-                Подробнее
-              </button>
-              <button
-                tuiButton
                 appearance="secondary-destructive"
                 size="m"
                 type="button"
@@ -258,7 +249,7 @@
     
     <div style="overflow: overlay;">
       <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-        <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s">
+        <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s" (click)="currentCommit = commit">
           <div class="d-flex align-items-center justify-content-between">
             <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
               <b>{{ commit.message }}</b>
@@ -316,19 +307,44 @@
   <div class="px-3 pt-3" style="width: 100%; background-color: white;">
     <tui-stepper [(activeItemIndex)]="activeStepperItem">
       <button tuiStep>Выбор файла</button>
-      <button tuiStep>Местоположение</button>
-      <button tuiStep>Параметры</button>
+      <button tuiStep *ngIf="commitForm.controls.isNewFile.value">Параметры</button>
+      <button tuiStep *ngIf="commitForm.controls.isNewFile.value">Местоположение</button>      
+      <button tuiStep *ngIf="!commitForm.controls.isNewFile.value">Местоположение</button>
+      <button tuiStep *ngIf="!commitForm.controls.isNewFile.value">Коммит</button>
     </tui-stepper>
   </div>
 </ng-template>
 
 <ng-template #dialogContent>
-  <form [formGroup]="commitForm" (ngSubmit)="commit()">
+  <form [formGroup]="commitForm" (ngSubmit)="commitRequest()" enctype="multipart/form-data">
     <div class="tui-row tui-row_sme">
       <div class="tui-col_12">
         <div class="tui-form__row" *ngIf="activeStepperItem == 0">
+          <div
+            tuiGroup
+            class="tui-form__row tui-space_bottom-3"
+            [adaptive]="true"
+            [collapsed]="true"
+          >
+            <tui-radio-block
+              contentAlign="right"
+              formControlName="isNewFile"
+              [item]="true"
+              size="l"
+            >
+              Создать новый файл
+            </tui-radio-block>
+            <tui-radio-block
+              contentAlign="right"
+              formControlName="isNewFile"
+              [item]="false"
+              size="l"
+            >
+              Обновить существующий
+            </tui-radio-block>
+          </div>
           <tui-input-files 
-            [formControl]="fileValue"
+            formControlName="fileValue"
             (reject)="onReject($event)"
           >
             <ng-template let-dragged>
@@ -360,47 +376,86 @@
             <tui-file
               *ngIf="loadedFiles$ | async as file"
               [file]="file"
-              [showDelete]="fileValue.enabled"
+              [showDelete]="true"
               (removed)="removeFile()"
-            ></tui-file>
-        
+            ></tui-file>     
             <tui-file
               *ngIf="rejectedFiles$ | async as file"
               state="error"
               [file]="file"
-              [showDelete]="fileValue.enabled"
+              [showDelete]="true"
               (removed)="clearRejected()"
             ></tui-file>
-        
             <tui-file
               *ngIf="loadingFiles$ | async as file"
               state="loading"
               [file]="file"
-              [showDelete]="fileValue.enabled"
+              [showDelete]="true"
             ></tui-file>
           </tui-files>
-          
         </div>
-        <div class="tui-form__row" *ngIf="activeStepperItem == 1">
-          <div class="d-flex">
+        <div class="tui-form__row" *ngIf="activeStepperItem == 1 && commitForm.controls.isNewFile.value">
+          <tui-input 
+            tuiTextfield 
+            formControlName="filenameValue"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Название файла
+          </tui-input>
+          <tui-input 
+            tuiTextfield 
+            formControlName="descriptionValue" 
+            class="tui-space_top-3"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Описание
+          </tui-input>
+          <tui-input 
+            tuiTextfield 
+            formControlName="commitMessageValue" 
+            class="tui-space_top-3"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true">
+            Сообщение коммита
+          </tui-input>
+          <tui-input-tag
+            class="b-form tui-space_top-3"
+            tuiTextfieldSize="l"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldCleaner]="true"
+            [expandable]="true"
+            [editable]="true"
+            [uniqueTags]="true"
+            [separator]="';'"
+            formControlName="commitTagsValue"
+          >
+            Список меток коммита через ';'
+          </tui-input-tag>
+        </div>
+        <div class="tui-form__row" *ngIf="activeStepperItem == 2 && commitForm.controls.isNewFile.value">
+          <div class="d-flex align-items-center justify-content-between">
             <tui-input 
               tuiTextfield 
               formControlName="pathValue"
               [tuiTextfieldLabelOutside]="true"
-              class="tui-space_bottom-3">
+              [tuiTextfieldCleaner]="true"
+              [tuiTextfieldPostfix]="this.commitForm.controls.filenameValue.value ? this.commitForm.controls.filenameValue.value : ''"
+              tuiTextfieldSize="m"
+              class="tui-space_bottom-3"
+              style="width: 70%;">
               Путь к файлу
             </tui-input>
             <button
               tuiButton
               size="m"
               type="button"
-              class="tui-form__button"
+              class="tui-form__button tui-space_bottom-3"
             >
               Новая папка
             </button>
           </div>
           <tui-accordion class="container-fluid px-0 pb-4" [rounded]="true">
-            <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
+            <tui-accordion-item [showArrow]="false" size="s" (dblclick)="modalMoveToParentDirectory()" *ngIf="this.modalModulesTree.length > 1">
               <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex">
                   <div class="tui-space_right-3">
@@ -418,12 +473,12 @@
                     type="button"
                     shape="rounded"
                     icon="tuiIconArrowUpCircle"
-                    (click)="moveToParentDirectory()">
+                    (click)="modalMoveToParentDirectory()">
                   </button>
                 </div>
               </div>
             </tui-accordion-item>
-            <tui-accordion-item *ngFor="let item of module.files" [showArrow]="false" size="s" (click)="chooseItemForUpload(item)" (dblclick)="moveToChildDirectory(item)">
+            <tui-accordion-item *ngFor="let item of modalModule.files" [showArrow]="false" size="s" (click)="modalSetCurrentModulePath(item)" (dblclick)="modalMoveToChildDirectory(item)">
               <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex">
                   <div class="tui-space_right-3">
@@ -442,29 +497,86 @@
                     type="button"
                     shape="rounded"
                     icon="tuiIconArrowDownCircle"
-                    (click)="moveToChildDirectory(item)">
+                    (click)="modalMoveToChildDirectory(item)">
                   </button>
                 </div>
               </div>
             </tui-accordion-item>
           </tui-accordion>
         </div>
-        <div class="tui-form__row" *ngIf="activeStepperItem == 2">
-          <tui-input 
-            tuiTextfield 
-            formControlName="filenameValue"
-            [tuiTextfieldLabelOutside]="true"
-            [tuiTextfieldCleaner]="true">
-            Название файла
-          </tui-input>
-          <tui-input 
-            tuiTextfield 
-            formControlName="descriptionValue" 
-            class="tui-space_top-3"
-            [tuiTextfieldLabelOutside]="true"
-            [tuiTextfieldCleaner]="true">
-            Описание
-          </tui-input>
+        <div class="tui-form__row" *ngIf="activeStepperItem == 1 && !commitForm.controls.isNewFile.value">
+          <div class="d-flex align-items-center justify-content-between">
+            <tui-input 
+              tuiTextfield 
+              formControlName="pathValue"
+              [tuiTextfieldLabelOutside]="true"
+              [tuiTextfieldCleaner]="true"
+              [tuiTextfieldPostfix]="this.commitForm.controls.filenameValue.value ? this.commitForm.controls.filenameValue.value : ''"
+              tuiTextfieldSize="m"
+              class="tui-space_bottom-3"
+              style="width: 70%;">
+              Путь к файлу
+            </tui-input>
+            <button
+              tuiButton
+              size="m"
+              type="button"
+              class="tui-form__button tui-space_bottom-3"
+            >
+              Новая папка
+            </button>
+          </div>
+          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="true">
+            <tui-accordion-item [showArrow]="false" size="s" (dblclick)="modalMoveToParentDirectory()" *ngIf="this.modalModulesTree.length > 1">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFolderMinusLarge"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-3">
+                    <b>...</b>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowUpCircle"
+                    (click)="modalMoveToParentDirectory()">
+                  </button>
+                </div>
+              </div>
+            </tui-accordion-item>
+            <tui-accordion-item *ngFor="let item of modalModule.files" [showArrow]="false" size="s" (click)="modalSetCurrentModulePath(item)" (dblclick)="modalMoveToChildDirectory(item)">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFileLarge" *ngIf="!item.files"></tui-svg>
+                    <tui-svg src="tuiIconFolderPlusLarge" *ngIf="!!item.files"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-4">
+                    <b>{{ item.name }}</b>
+                  </div>
+                </div>
+                <div *ngIf="!!item.files">
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowDownCircle"
+                    (click)="modalMoveToChildDirectory(item)">
+                  </button>
+                </div>
+              </div>
+            </tui-accordion-item>
+          </tui-accordion>
+        </div>
+        <div class="tui-form__row" *ngIf="activeStepperItem == 2 && !commitForm.controls.isNewFile.value">
           <tui-input 
             tuiTextfield 
             formControlName="commitMessageValue" 
@@ -545,7 +657,7 @@
             formControlName="descriptionValue"
             class="field-medium"
             [expandable]="true"
-            [maxLength]="255"
+            [maxLength]="1000"
           >
             Описание файла
           </tui-text-area>
@@ -574,7 +686,7 @@
 </ng-template>
 
 <ng-template #editCommitDialogContent>
-  <form [formGroup]="editCommitForm">
+  <form [formGroup]="editCommitForm" (ngSubmit)="editCommit()">
     <div class="tui-row tui-row_sme">
       <div class="tui-col_12">
         <div class="tui-form__row">

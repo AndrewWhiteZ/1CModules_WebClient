@@ -30,16 +30,9 @@ export class RepoPresentationComponent {
   path: string = '';
   currentPath: string[] = [];
   currentModule: Module | null = null;
+  currentCommit: Commit | null = null;
   modulesList: Array<Module> = [];
   commitsList: Array<Commit> = [];
-
-  fileValue = new FormControl();
-
-  readonly rejectedFiles$ = new Subject<TuiFileLike | null>();
-  readonly loadingFiles$ = new Subject<TuiFileLike | null>();
-  readonly loadedFiles$ = this.fileValue.valueChanges.pipe(
-    switchMap(file => (file ? this.makeRequest(file) : of(null))),
-  );
 
   fileSearchForm = new FormGroup({
     fileSearchValue: new FormControl("", Validators.nullValidator),
@@ -50,10 +43,12 @@ export class RepoPresentationComponent {
   });
 
   commitForm = new FormGroup({
+    isNewFile: new FormControl(true, Validators.required),
+    fileValue: new FormControl(),
     filenameValue: new FormControl(``, Validators.required),
-    descriptionValue: new FormControl(),
+    descriptionValue: new FormControl(``),
     commitMessageValue: new FormControl(``, Validators.required),
-    commitTagsValue: new FormControl(),
+    commitTagsValue: new FormControl(``),
     pathValue: new FormControl(``),
   });
 
@@ -66,6 +61,16 @@ export class RepoPresentationComponent {
     tagsValue: new FormControl(``, Validators.required),
   });
 
+  file: TuiFileLike = {
+    name: '',
+  }
+
+  readonly rejectedFiles$ = new Subject<TuiFileLike | null>();
+  readonly loadingFiles$ = new Subject<TuiFileLike | null>();
+  readonly loadedFiles$ = this.commitForm.controls.fileValue.valueChanges.pipe(
+    switchMap(file => { this.file = file; return (file ? this.makeRequest(file) : of(null)) }),
+  );
+
   module: Module = {
     name: '...',
     type: 'directory',
@@ -74,11 +79,16 @@ export class RepoPresentationComponent {
     files: this.modulesList,
   }
 
-  modulesTree: Module[] = [this.module];
+  modalModule: Module = {
+    name: '...',
+    type: 'directory',
+    lastCommit: new CommitShort('_1', 'root_commit', new Date()),
+    locked: false,
+    files: this.modulesList,
+  }
 
-  // readonly file: TuiFileLike = {
-  //   name: 'custom.txt',
-  // };
+  modulesTree: Module[] = [this.module];
+  modalModulesTree: Module[] = [this.modalModule];
 
   constructor(
     private router: Router, 
@@ -100,26 +110,38 @@ export class RepoPresentationComponent {
     }
   }
 
-  chooseItemForUpload(module: Module) {
-    console.log(module.name);
-    // if(module.type == 'file') {
-    //   this.commitForm.setValue({ pathValue: module.name });
-    // }
-  }
-
   showModules() {
-    this.repoRequestService.getModulesByRepoId(this.repoId).subscribe({next:(data: Module[]) => { 
+    this.repoRequestService.getModulesByRepoId(this.repoId).subscribe((data: Module[]) => { 
       this.module.files = data;
       this.modulesTree[0] = { ...this.module };
+      this.modalModule.files = data;
+      this.modalModulesTree[0] = { ...this.modalModule };
+      this.currentCommit = null;
       this.cdr.detectChanges();
-    }});
+    }), (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
+    };
   }
 
   showCommits() {
     const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
-    this.repoRequestService.getCommitsByRepoModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe({next:(data: Commit[]) => {
+    this.repoRequestService.getCommitsByRepoModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe((data: Commit[]) => {
       this.commitsList = data;
-    }});
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
+    });
   }
 
   lockFile(event: MouseEvent, module: Module): void {
@@ -148,6 +170,14 @@ export class RepoPresentationComponent {
           module.locked = true;
         });
       }
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
@@ -177,6 +207,14 @@ export class RepoPresentationComponent {
            module.locked = false;
         });
       }
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
@@ -192,6 +230,14 @@ export class RepoPresentationComponent {
         a.click();
         URL.revokeObjectURL(objectUrl);
       });
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
@@ -208,6 +254,14 @@ export class RepoPresentationComponent {
         a.click();
         URL.revokeObjectURL(objectUrl);
       });
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
@@ -224,6 +278,7 @@ export class RepoPresentationComponent {
           autoClose: false
         }).subscribe();
         this.modulesList = data["data"];
+        this.editModuleForm.reset();
         this.dialogSubscription.unsubscribe();
         this.cdr.detectChanges();
       } else {
@@ -232,15 +287,22 @@ export class RepoPresentationComponent {
           status: TuiNotification.Error, 
           autoClose: false
         }).subscribe();
-        this.dialogSubscription.unsubscribe();
         this.cdr.detectChanges();
       }
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
-  editCommit(commit: Commit): void {
-    this.repoRequestService.patchCommit(this.repoId, commit.id, { 
-      "tags": this.editModuleForm.controls.tagsValue.value,
+  editCommit(): void {
+    this.repoRequestService.patchCommit(this.repoId, this.currentCommit!.id, { 
+      "tags": this.editCommitForm.controls.tagsValue.value,
     }).subscribe((data: any) => {
       if(data["status"] == 0) {
         this.alerts.open(`Коммит успешно изменён`, {
@@ -248,7 +310,8 @@ export class RepoPresentationComponent {
           status: TuiNotification.Success, 
           autoClose: false
         }).subscribe();
-        this.commitsList = data["data"];
+        this.currentCommit = data["data"];
+        this.editCommitForm.reset();
         this.dialogSubscription.unsubscribe();
         this.cdr.detectChanges();
       } else {
@@ -257,18 +320,62 @@ export class RepoPresentationComponent {
           status: TuiNotification.Error, 
           autoClose: false
         }).subscribe();
-        this.dialogSubscription.unsubscribe();
         this.cdr.detectChanges();
       }
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
-  infoFile(module: Module): void {
-
-  }
-
   deleteFile(module: Module): void {
+    const data: TuiPromptData = {
+      content: `Вы действительно хотите удалить файл <b>${module.name}</b> из репозитория?`,
+      yes: 'Да, удалить файл',
+      no: 'Отмена',
+    };
 
+    const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
+    this.dialogs.open<boolean>(TUI_PROMPT, {
+      label: "",
+      size: "m",
+      data,
+    })
+    .subscribe(response => {
+      if(response) {
+        this.repoRequestService.deleteModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe((data: any) => {
+          if(data["status"] == 0) {
+            this.alerts.open(`Файл <b>${module.name}</b> успешно удален из репозитория`, { 
+              label: 'Удален',
+              status: TuiNotification.Success, 
+              autoClose: false
+            }).subscribe();
+            this.showModules();
+            this.dialogSubscription.unsubscribe();
+            this.cdr.detectChanges();
+          } else {
+            this.alerts.open(`${data["message"]}`, { 
+              label: 'Ошибка', 
+              status: TuiNotification.Error, 
+              autoClose: false
+            }).subscribe();
+          }
+        }, (error: any) => {
+            error = error["error"];
+            this.alerts.open(error["message"], {
+              label: 'Ошибка', 
+              status: TuiNotification.Error, 
+              autoClose: false
+            }).subscribe();
+            this.cdr.detectChanges();
+        });
+      }
+    });
   }
 
   createCommit( 
@@ -285,8 +392,44 @@ export class RepoPresentationComponent {
     ).subscribe();
   }
 
-  commit() {
+  commitRequest() {
+    const formData: FormData = new FormData();
 
+    formData.append("path", this.commitForm.controls.pathValue.value ? this.commitForm.controls.pathValue.value : '');
+    formData.append("message", this.commitForm.controls.commitMessageValue.value ? this.commitForm.controls.commitMessageValue.value : '');
+    formData.append("fileDescription", this.commitForm.controls.descriptionValue.value ? this.commitForm.controls.descriptionValue.value : '');
+    formData.append("fileTags", '');
+    formData.append("commitTags", this.commitForm.controls.commitTagsValue.value ? this.commitForm.controls.commitTagsValue.value : '');
+    formData.append("file", this.commitForm.controls.fileValue.value ? this.commitForm.controls.fileValue.value : '');
+
+    this.repoRequestService.createCommit(this.repoId, formData).subscribe((data: any) => {
+      if(data["status"] == 0) {
+        this.alerts.open(`Файл <b>${data["data"]["message"]}</b> успешно загружен`, {
+          label: 'Загружен', 
+          status: TuiNotification.Success, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.showModules();
+        this.commitForm.reset();
+        this.cdr.detectChanges();
+      } else {
+        this.alerts.open(data["message"], {
+          label: 'Ошибка', 
+          status: TuiNotification.Error, 
+          autoClose: false
+        }).subscribe();
+        this.cdr.detectChanges();
+      };
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
+    });
   }
 
   moveToParentDirectory(): void {
@@ -313,6 +456,28 @@ export class RepoPresentationComponent {
     }
   }
 
+  modalMoveToParentDirectory(): void {
+    if(this.modalModulesTree.length > 1) {
+      const currentModule = this.modalModulesTree[this.modalModulesTree.length - 2];
+      this.modalModule = currentModule;
+      this.modalModulesTree.pop();
+    }
+  }
+
+  modalMoveToChildDirectory(module: Module): void {
+    if(module.type == "directory") {
+      this.modalModule = module;
+      this.modalModulesTree[this.modalModulesTree.length] = { ...this.modalModule };
+    }
+  }
+
+  modalSetCurrentModulePath(module: Module): void {
+    if(module.type == "file") {
+      const pathToModule = this.modalModulesTree.map(a => a.name).slice(1).concat(module.name).join('/');
+      this.commitForm.controls.pathValue.setValue(pathToModule);
+    }
+  }
+
   closeDialog() {
     this.dialogSubscription.unsubscribe();
   }
@@ -322,7 +487,7 @@ export class RepoPresentationComponent {
   }
 
   removeFile(): void {
-      this.fileValue.setValue(null);
+      this.commitForm.controls.fileValue.setValue(null);
   }
 
   clearRejected(): void {
@@ -333,10 +498,12 @@ export class RepoPresentationComponent {
   makeRequest(file: TuiFileLike): Observable<TuiFileLike | null> {
       this.loadingFiles$.next(file);
 
-      return timer(1000).pipe(
-        map(() => { return file }),
-        finalize(() => this.loadingFiles$.next(null)),
-      );
+      return timer(1).pipe(
+        map(() => {
+          return file;
+        }),
+      finalize(() => this.loadingFiles$.next(null)),
+    );
   }
 
   openEditModuleDialog(

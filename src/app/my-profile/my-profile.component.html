@@ -1,14 +1,88 @@
-<tui-island class="d-flex justify-content-between" size="l">
+<tui-island>
+  <tui-island class="d-flex justify-content-between tui-space_bottom-3" size="l">
     <div>
-        <h1>{{ authorizedUser.fullName }}</h1>
-        <h3>Логин: {{ authorizedUser.name }} ID: {{ authorizedUser.id }}</h3>
-        <p>{{ authorizedUser.createdOn }}</p>
-        <p>{{ authorizedUser.email }}</p>
+      <h1>{{ authorizedUser.fullName }}</h1>
+      <h3>Логин: {{ authorizedUser.name }} ID: {{ authorizedUser.id }}</h3>
+      <p>{{ authorizedUser.createdOn }}</p>
+      <p>{{ authorizedUser.email }}</p>
     </div>
     <tui-avatar
-        [text]="authorizedUser.fullName"
-        size="xxl"
-        [rounded]="true"
-        [autoColor]="true"
+      [text]="authorizedUser.fullName"
+      size="xxl"
+      [rounded]="true"
+      [autoColor]="true"
     ></tui-avatar>
+  </tui-island>
+  
+  <tui-island class="p-0">
+    <header class="d-flex border-bottom justify-content-between px-4 pb-2">
+      <tui-tabs>
+        <button tuiTab class="px-2">
+          <tui-svg src="tuiIconListLarge" class="tui-space_right-2"></tui-svg>
+          Список
+        </button>
+        <button tuiTab class="px-2">
+          <tui-svg src="tuiIconTableLarge" class="tui-space_right-2"></tui-svg>
+          Таблица
+        </button>
+      </tui-tabs>
+    </header>
+
+    <div style="overflow: overlay;">
+      <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+        <tui-accordion-item *ngFor="let repo of userPublicRepoList, let i = index" [showArrow]="false" size="m">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="d-flex">
+                <tui-svg
+                  src="tuiIconGlobe"
+                  class="tui-space_right-1"
+                  *ngIf="repo.isPublic"
+                ></tui-svg>
+                <tui-svg
+                  src="tuiIconEyeOff"
+                  class="tui-space_right-1"
+                  *ngIf="!repo.isPublic"
+                ></tui-svg>
+                <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
+                <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+              </div>
+              <a tuiLink [routerLink]="'/profile/' + repo.creator.id" style="font-size: 18px;" class="d-flex align-items-center">
+                <tui-avatar
+                  [text]="repo.creator.fullName"
+                  size="xs"
+                  class="tui-space_right-2"
+                  [rounded]="true"
+                  [autoColor]="true"
+                ></tui-avatar>
+                {{ repo.creator.fullName }}
+              </a>
+            </div>
+            <div class="d-flex align-items-center">
+              <button
+                tuiIconButton
+                appearance="primary"
+                size="m"
+                type="button"
+                shape="rounded"
+                class="tui-space_right-3"
+                icon="tuiIconExternalLink"
+                [routerLink]="['/repositories/', repo.id]">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary-destructive"
+                size="m"
+                type="button"
+                shape="rounded"
+                icon="tuiIconTrash2"
+                (click)="deleteRepo(repo)"
+                >
+              </button>
+            </div>
+          </div>
+        </tui-accordion-item>
+      </tui-accordion>
+    </div>
+  </tui-island>
 </tui-island>

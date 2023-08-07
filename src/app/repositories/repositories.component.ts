@@ -1,8 +1,12 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { RepoRequestService } from '../repo-request.service';
 import { TransferDataService } from '../transfer-data.service';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { TuiAlertService, TuiDialogService, TuiNotification, TuiDialogContext, TuiDialogSize } from '@taiga-ui/core';
 import { Repository } from '../Repository';
 import { TUI_ARROW } from '@taiga-ui/kit';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-repositories',
@@ -11,7 +15,7 @@ import { TUI_ARROW } from '@taiga-ui/kit';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepositoriesComponent {
-  repoRequestService: RepoRequestService;
+  dialogSubscription: Subscription = new Subscription;
   repoList: Array<Repository> = [];
   tableRepoList: Array<Repository> = []; 
   activeAccessLevelTab: number = 1;
@@ -20,8 +24,19 @@ export class RepositoriesComponent {
   arrow = TUI_ARROW;
   columns = ['name', 'isPublic', 'tags', 'creator', 'description', 'actions'];
 
-  constructor(repoRequestService: RepoRequestService, private cdr: ChangeDetectorRef, private dataService: TransferDataService) {
-    this.repoRequestService = repoRequestService;
+  createRepoForm = new FormGroup({
+    nameValue: new FormControl("", Validators.required),
+    descriptionValue: new FormControl("", Validators.required),
+    tagsValue: new FormControl("",),
+    isPrivateValue: new FormControl(false,),
+  });
+
+  constructor(
+    private cdr: ChangeDetectorRef, 
+    private dataService: TransferDataService,
+    private repoRequestService: RepoRequestService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    @Inject(TuiAlertService) private readonly alerts: TuiAlertService,) {
   }
   
   ngOnInit() {
@@ -54,8 +69,48 @@ export class RepositoriesComponent {
     this.dataService.updateCurrentData(repo);
   }
 
-  // remove(item: Repository): void {
-  //   this.repoList = this.repoList.filter(repo => repo !== item);
-  // }
+  createNewRepo(
+    content: PolymorpheusContent<TuiDialogContext>,
+    size: TuiDialogSize): void
+  {
+    this.dialogSubscription = this.dialogs.open(
+      content,
+      {
+        label: 'Создание репозитория',
+        size,
+      },
+    ).subscribe();
+  }
 
+  createRepoRequest() {
+    this.repoRequestService.createRepo({ 
+      "repoName": this.createRepoForm.controls.nameValue.value,
+      "description": this.createRepoForm.controls.descriptionValue.value,
+      "tags": this.createRepoForm.controls.tagsValue.value,
+      "isPrivate": this.createRepoForm.controls.isPrivateValue.value,
+    }).subscribe((data: any) => {
+      if(data["status"] == 0) {
+        this.alerts.open(`Репозиторий успешно создан`, {
+          label: 'Создан', 
+          status: TuiNotification.Success, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.repoList.push(data);
+        this.cdr.detectChanges();
+      } else {
+        this.alerts.open(data["message"], {
+          label: 'Ошибка', 
+          status: TuiNotification.Error, 
+          autoClose: false
+        }).subscribe();
+        this.dialogSubscription.unsubscribe();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  closeDialog() {
+    this.dialogSubscription.unsubscribe();
+  }
 }

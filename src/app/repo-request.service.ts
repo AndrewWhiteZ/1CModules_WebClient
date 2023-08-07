@@ -59,9 +59,7 @@ export class RepoRequestService {
 
   getRepoProfiles(repoId: string) {
     return this.http.get(`/api/v1/repos/${repoId}/users`).pipe(map((data: any) => {
-
       let dataList = data["data"];
-
       return dataList.map(function(profile: any): Profile {
         let user = profile["user"];
         let accessLevel = profile["accessLevel"];
@@ -104,6 +102,14 @@ export class RepoRequestService {
     })
   }
 
+  createRepo(body: Object): Observable<any> {
+    return this.http.post(`/api/v1/repos`, body);
+  }
+
+  createCommit(repoId: string, body: Object): Observable<any> {
+    return this.http.post(`/api/v1/repos/${repoId}/files`, body);
+  }
+
   patchRepo(repoId: string, body: Object): Observable<any> {
     return this.http.patch(`/api/v1/repos/${repoId}`, body);
   }
@@ -118,5 +124,14 @@ export class RepoRequestService {
 
   deleteModule(repoId: string, pathToModule: string): Observable<any> {
     return this.http.delete(`/api/v1/repos/${repoId}/files/${pathToModule}`);
+  }
+
+  deleteRepo(repoId: string) {
+    return this.http.delete(`/api/v1/repos/${repoId}`);
+  }
+
+
+  globalRepoSearch(body: any): Observable<any> {
+    return this.http.post(`/api/v1/search/repos`, body);
   }
 }

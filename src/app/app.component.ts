@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ModalComponent } from './modal/modal.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -10,6 +10,8 @@ import { LoginService } from './login.service';
 import { Observable, Subscription } from 'rxjs';
 import { RegRequest } from './reg-request';
 import { User } from './User';
+import { ProfileRequestService } from './profile-request.service';
+import { RepoRequestService } from './repo-request.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,8 @@ import { User } from './User';
 })
 export class AppComponent {
   title = '1C Modules';
-  dialogSubscription: Subscription = new Subscription; 
+  dialogSubscription: Subscription = new Subscription;
+  open: boolean = false;
 
   searchForm = new FormGroup({
     searchValue: new FormControl("", Validators.nullValidator),
@@ -47,7 +50,19 @@ export class AppComponent {
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, 
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
-    private loginService: LoginService) {}
+    private cdr: ChangeDetectorRef,
+    private loginService: LoginService,
+    private profileService: ProfileRequestService,
+    private repoService: RepoRequestService) {}
+
+  ngOnInit() {
+    this.profileService.getMyProfileInfo().subscribe((data: any) => {
+      if(data != null) {
+        this.authorizedUser = new User(data["id"], data["username"], data["fullName"], data["createdOn"], null);
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   onClick(event: MouseEvent): void {
     this.sidebarOpened = !this.sidebarOpened;
@@ -77,7 +92,7 @@ export class AppComponent {
       .subscribe(
         {next: (data: any) => 
           { 
-            if (data["status"] < 300) {
+            if (data["status"] == 0) {
               data = data["data"];
               this.dialogSubscription.unsubscribe();
               this.authorizedUser = new User(data["id"], data["username"], data["fullName"], data["createdOn"], null);
@@ -86,10 +101,10 @@ export class AppComponent {
                 status: TuiNotification.Success, 
                 autoClose: true
               }).subscribe();
+              this.cdr.detectChanges();
             }
             else {
-              console.log("Error");
-              this.alerts.open('Basic <strong>HTML</strong>', {label: 'With a heading!'}).subscribe();
+              this.alerts.open('При попытке авторизации произошла ошибка', {label: 'Ошибка'}).subscribe();
             }
           }
         });
@@ -107,7 +122,7 @@ export class AppComponent {
       .subscribe(
         {next: (data: any) => 
           { 
-            if (data["status"] < 300) {
+            if (data["status"] == 0) {
               data = data["data"];
               this.dialogSubscription.unsubscribe();
               this.authorizedUser = new User(data["id"], data["name"], data["fullName"], data["createdOn"], null);
@@ -116,13 +131,19 @@ export class AppComponent {
                 status: TuiNotification.Success, 
                 autoClose: false
               }).subscribe();
+              this.cdr.detectChanges();
             }
             else {
-              console.log("Error");
-              this.alerts.open('Basic <strong>HTML</strong>', {label: 'With a heading!'}).subscribe();
+              this.alerts.open('При попытке регистрации произошла ошибка', {label: 'Ошибка'}).subscribe();
             }
           }
         });
+  }
+
+  logout() {
+    this.loginService.logout().subscribe(() => {
+      this.authorizedUser = null;
+    });
   }
 
   closeDialog() {
@@ -133,8 +154,10 @@ export class AppComponent {
     this.sidebarOpened = !this.sidebarOpened;
   }
 
-  onActiveTabChange() {
-
+  search() {
+    console.log(this.searchForm.controls.searchValue.value);
+    this.repoService.globalRepoSearch({ 'tags': this.searchForm.controls.searchValue.value }).subscribe((data: any) => {
+      console.log(data);
+    });
   }
-
 }

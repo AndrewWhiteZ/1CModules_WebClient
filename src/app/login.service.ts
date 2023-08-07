@@ -25,17 +25,14 @@ export class LoginService {
   }
 
   authorize(request: AuthRequest): Observable<any> {
-    // return this.http.post("api/v1/login", request, { headers: { "Content-Type": "application/json" } }).pipe(map((next: any) => {
-    //   if (next["status"] < 300) {
-    //     return next["data"];
-    //   }
-    // }));
     return this.http.post("api/v1/login", request, { headers: { "Content-Type": "application/json" } });
   }
 
   register(request: RegRequest): Observable<any> {
-    //return this.httpResponseHandler(this.http.post("api/v1/register", request, { headers: { "Content-Type": "application/json" } }));
     return this.http.post("api/v1/register", request, { headers: { "Content-Type": "application/json" } });
   }
 
+  logout() {
+    return this.http.get("api/v1/logout");
+  }
 }

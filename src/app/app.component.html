@@ -14,19 +14,20 @@
         </button>
 
         <form class="b-form" [formGroup]="searchForm" style="width: 100%;">
-          <tui-input 
+          <tui-input-tag
             formControlName="searchValue"
             tuiTextfieldSize="m"
-            [tuiTextfieldCleaner]="true"
+            class="tui-space_top-2"
             [tuiTextfieldLabelOutside]="true"
-            tuiTextfieldIconLeft="tuiIconSearch">
-            Поиск
-            <input
-              tuiTextfield
-              type="text"
-              placeholder="Поиск"
-              tuiTextfieldIcon="tuiIconMenu"/>
-          </tui-input>
+            [tuiTextfieldCleaner]="true"
+            [uniqueTags]="true"
+            [editable]="true"
+            separator=";"
+            placeholder="Поиск по меткам"
+            (ngModelChange)="search()"
+          >
+            Поиск по меткам, разделенным <b>';'</b>
+          </tui-input-tag>
         </form>
       </div>
 
@@ -44,7 +45,7 @@
 
           <ng-template #header>
             <div class="px-4 pt-2" style="width: 100%; background-color: white;">
-              <tui-tabs [(activeItemIndex)]="activeTab" (activeItemIndexChange)="onActiveTabChange()">
+              <tui-tabs [(activeItemIndex)]="activeTab">
                 <button tuiTab class="px-2">
                   <b>Авторизация</b>
                 </button>
@@ -140,18 +141,35 @@
             </form>
           </ng-template>
         </div>
-        <div class="tui-space_right-2" *ngIf="authorizedUser != null">
-          <a tuiLink routerLink="/profile/me" style="font-size: 16px;" class="d-flex align-items-center justify-content-end">
+        <tui-hosted-dropdown 
+          *ngIf="authorizedUser != null"
+          [content]="dropdown"
+          [(open)]="open"
+        >
+          <a tuiLink style="font-size: 16px;" class="d-flex align-items-center justify-content-end">
             <tui-avatar
-              text="Andrew White"
+              [text]="authorizedUser.fullName"
               size="s"
               class="tui-space_right-2 tui-space_left-1"
               [rounded]="true"
               [autoColor]="true"
             ></tui-avatar>
             {{ authorizedUser.fullName }}
+            <tui-svg src="tuiIconChevronDown" class="tui-space_right-2"></tui-svg>
           </a>
-        </div>
+        </tui-hosted-dropdown>
+        <ng-template #dropdown>
+          <tui-accordion [rounded]="false" [closeOthers]="false">
+            <tui-accordion-item routerLink="/profile/me" [showArrow]="false" [borders]="null" class="align-items-center">
+              <tui-svg src="tuiIconUserLarge" class="tui-space_right-2"></tui-svg>
+              Профиль
+            </tui-accordion-item>
+            <tui-accordion-item routerLink="/home" [showArrow]="false" [borders]="null" class="align-items-center" (click)="logout()">
+              <tui-svg src="tuiIconLogOutLarge" class="tui-space_right-2"></tui-svg>
+              Выйти
+            </tui-accordion-item>
+          </tui-accordion>
+        </ng-template>
       </div>
     </header>
 
