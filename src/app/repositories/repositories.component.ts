@@ -107,6 +107,14 @@ export class RepositoriesComponent {
         this.dialogSubscription.unsubscribe();
         this.cdr.detectChanges();
       }
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 

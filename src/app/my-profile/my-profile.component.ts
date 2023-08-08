@@ -40,6 +40,14 @@ export class MyProfileComponent {
     this.profileService.getProfilePublicRepos(this.authorizedUser.id).subscribe((data: any) => {
       this.userPublicRepoList = data;
       this.cdr.detectChanges();
+    }, (error: any) => {
+      error = error["error"];
+      this.alerts.open(error["message"], {
+        label: 'Ошибка', 
+        status: TuiNotification.Error, 
+        autoClose: false
+      }).subscribe();
+      this.cdr.detectChanges();
     });
   }
 
@@ -54,8 +62,7 @@ export class MyProfileComponent {
       label: "",
       size: "m",
       data,
-    })
-    .subscribe(response => {
+    }).subscribe(response => {
       if(response) {
         this.repoService.deleteRepo(repo.id).subscribe((data: any) => {
           if(data["status"] == 0) {
@@ -73,6 +80,14 @@ export class MyProfileComponent {
               autoClose: false
             }).subscribe();
           }
+        }, (error: any) => {
+          error = error["error"];
+          this.alerts.open(error["message"], {
+            label: 'Ошибка', 
+            status: TuiNotification.Error, 
+            autoClose: false
+          }).subscribe();
+          this.cdr.detectChanges();
         });
       }
     });

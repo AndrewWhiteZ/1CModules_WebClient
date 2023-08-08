@@ -1,12 +1,5 @@
-import { Component, ChangeDetectorRef, ViewChild, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MdbTabsComponent } from 'mdb-angular-ui-kit/tabs';
-import { LoginService } from '../login.service';
-import { AuthRequest } from '../auth-request';
-import { RegRequest } from '../reg-request';
-import { TuiDialogContext, TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { Component} from '@angular/core';
+
 
 @Component({
   selector: 'app-modal',
@@ -14,88 +7,4 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent {
-  @ViewChild('tabs') tabs: MdbTabsComponent = {} as MdbTabsComponent;
-  validationForm: FormGroup;
-
-  title: string | null = null;
-  mainButtonText: string | null = null;
-  cb: Function = Function();
-  formType: number = 0;
-
-  constructor(private cdr: ChangeDetectorRef, 
-              public modalRef: MdbModalRef<ModalComponent>, 
-              private loginService: LoginService, 
-              @Inject(TuiDialogService)  private readonly dialogs: TuiDialogService) {
-    if (this.formType == 0) {
-      this.validationForm = new FormGroup({
-        login: new FormControl(null, { validators: Validators.required, updateOn: 'blur' }),
-        email: new FormControl(null),
-        password: new FormControl(null, { validators: [Validators.minLength(8), Validators.maxLength(20)], updateOn: 'blur' }),
-      }); 
-    } else if (this.formType == 1) {
-      this.validationForm = new FormGroup({
-        login: new FormControl(null, { validators: Validators.required, updateOn: 'blur' }),
-        email: new FormControl(null, { validators: [Validators.minLength(8), Validators.maxLength(20)], updateOn: 'blur' }),
-        password: new FormControl(null, { validators: Validators.required, updateOn: 'blur' }),
-      });
-    } else {
-      this.validationForm = new FormGroup({});
-    }
-  }
-
-  ngAfterViewInit() {
-    if (this.formType == 0) {
-      this.title = "Авторизация";
-      this.tabs.setActiveTab(1);
-    } else {
-      this.title = "Регистрация";
-      this.tabs.setActiveTab(0);
-    };
-    this.cdr.detectChanges();
-  }
-
-  activeTabChangeHandler() {
-    if (this.formType == 0) {
-      this.formType = 1;
-      this.title = "Регистрация";
-    } else {
-      this.formType = 0;
-      this.title = "Авторизация";
-    }
-    this.cdr.detectChanges();
-  }
-
-  submitForm() {
-    if (this.formType == 0) {
-      this.loginService.authorize(new AuthRequest(this.login.value, this.password.value)).subscribe({next: (data: any) => { if (data["status"] < 300) this.modalRef.close() }});
-    } else if (this.formType == 1) {
-      this.loginService.register(new RegRequest(this.login.value, this.email.value, this.login.value, this.password.value)).subscribe({next: (data: any) => { if (data["status"] < 300) this.modalRef.close() }});
-    }
-  }
-
-  get login(): AbstractControl {
-    return this.validationForm.get('login')!;
-  }
-
-  get email(): AbstractControl {
-    return this.validationForm.get('email')!;
-  }
-
-  get password(): AbstractControl {
-    return this.validationForm.get('password')!;
-  }
-
-  onClick(
-    content: PolymorpheusContent<TuiDialogContext>,
-    header: PolymorpheusContent,
-    size: TuiDialogSize,
-  ): void {
-      this.dialogs
-          .open(content, {
-              label: 'What a cool library set',
-              header,
-              size,
-          })
-          .subscribe();
-  }
 }
