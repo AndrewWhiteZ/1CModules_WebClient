@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
-import { Repository } from './Repository';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthRequest } from './auth-request';
 import { RegRequest } from './reg-request';
@@ -13,16 +10,6 @@ import { RegRequest } from './reg-request';
 export class LoginService {
 
   constructor(private http: HttpClient) { }
-
-  httpResponseHandler(observable: Observable<any>): any {
-    return observable.subscribe(next => {
-      if (next["status"] <= 300) {
-        return next["data"];
-      } else {
-        return null;
-      }
-    });
-  }
 
   authorize(request: AuthRequest): Observable<any> {
     return this.http.post("api/v1/login", request, { headers: { "Content-Type": "application/json" } });

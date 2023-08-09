@@ -12,6 +12,7 @@ import { RegRequest } from './reg-request';
 import { User } from './User';
 import { ProfileRequestService } from './profile-request.service';
 import { RepoRequestService } from './repo-request.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -50,6 +51,7 @@ export class AppComponent {
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, 
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     private loginService: LoginService,
     private profileService: ProfileRequestService,
@@ -155,9 +157,6 @@ export class AppComponent {
   }
 
   search() {
-    console.log(this.searchForm.controls.searchValue.value);
-    this.repoService.globalRepoSearch({ 'tags': this.searchForm.controls.searchValue.value }).subscribe((data: any) => {
-      console.log(data);
-    });
+    this.router.navigate(['/search'], { queryParams: { tag: this.searchForm.controls.searchValue.value } });
   }
 }

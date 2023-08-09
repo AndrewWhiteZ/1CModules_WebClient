@@ -17,16 +17,17 @@
           <tui-input-tag
             formControlName="searchValue"
             tuiTextfieldSize="m"
-            class="tui-space_top-2"
+            class="tui-space_"
             [tuiTextfieldLabelOutside]="true"
             [tuiTextfieldCleaner]="true"
             [uniqueTags]="true"
             [editable]="true"
+            tuiTextfieldIcon="tuiIconSearchLarge"
             separator=";"
             placeholder="Поиск по меткам"
             (ngModelChange)="search()"
           >
-            Поиск по меткам, разделенным <b>';'</b>
+            Поиск репозиториев по меткам, разделенных <b>';'</b>
           </tui-input-tag>
         </form>
       </div>
@@ -179,9 +180,9 @@
           <tui-accordion-item routerLink="/home" [showArrow]="false"> 
             Главная
           </tui-accordion-item>
-          <tui-accordion-item>
+          <tui-accordion-item routerLink="/repositories" [showArrow]="false">
             Репозитории
-            <ng-template tuiAccordionItemContent>
+            <!-- <ng-template tuiAccordionItemContent>
               <div #content class="pb-2 mb-2 border-bottom">
                 <a routerLink="/repositories" class="">Открыть список</a>
               </div>
@@ -223,9 +224,9 @@
                   ></button>
                 </li>
               </ul>    
-            </ng-template>
+            </ng-template> -->
           </tui-accordion-item>
-          <tui-accordion-item>
+          <!-- <tui-accordion-item>
             Отрывки
             <ng-template tuiAccordionItemContent>
               <div #content class="pb-2 mb-2 border-bottom">
@@ -270,7 +271,7 @@
                 </li>
               </ul>    
             </ng-template>
-          </tui-accordion-item>
+          </tui-accordion-item> -->
         </tui-accordion>
       </aside>   
       <main class="container-fluid">

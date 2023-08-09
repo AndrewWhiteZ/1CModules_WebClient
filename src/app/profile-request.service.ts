@@ -13,14 +13,6 @@ export class ProfileRequestService {
   constructor(private http: HttpClient) {
   }
 
-  httpResponseHandler(observable: Observable<any>): any {
-    return observable.subscribe(next => {
-      if (next["status"] <= 300) {
-        return JSON.parse(next["data"]);
-      }
-    });
-  }
-
   getMyProfileInfo(): Observable<User> {
     return this.http.get('/api/v1/me').pipe(map((data: any) => {
       let profile = data["data"];

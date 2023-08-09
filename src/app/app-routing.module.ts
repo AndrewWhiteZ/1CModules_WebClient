@@ -7,9 +7,11 @@ import { RepoPresentationComponent } from './repo-presentation/repo-presentation
 import { ProfileComponent } from './profile/profile.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { RepoEditComponent } from './repo-edit/repo-edit.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   { path: 'home', title: '1CModules - Главная', component: HomeComponent },
+  { path: 'search', title: '1CModules - Поиск', component: SearchComponent },
   { path: 'repositories', title: '1CModules - Репозитории', component: RepositoriesComponent },
   { path: 'snippets', title: '1CModules - Отрывки', component: SnippetsComponent },
   { path: 'profile/me', title: '1CModules - Мой профиль', component: MyProfileComponent },

@@ -1,0 +1,45 @@
+<tui-island class="p-0">
+	<header class="d-flex border-bottom justify-content-between px-0 pb-2">
+		<tui-tabs [(activeItemIndex)]="activeSearchSubjectIndex" class="tui-space_left-3">
+			<button 
+				tuiTab
+				class="px-2"
+			>
+				<tui-svg
+					src="tuiIconDatabaseLarge"
+					class="tui-space_right-2"
+				></tui-svg>
+				Репозитории
+			</button>
+		</tui-tabs>
+	</header>
+	<div style="overflow: overlay;">
+		<tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+			<tui-accordion-item [showArrow]="false" size="s" *ngFor="let repo of repoList">
+				<div class="d-flex align-items-center justify-content-between">
+					<div class="d-flex">
+						<tui-svg
+							src="tuiIconGlobeLarge"
+							*ngIf="repo.isPublic"
+						></tui-svg>
+						<tui-svg
+							src="tuiIconEyeOffLarge"
+							*ngIf="!repo.isPublic"
+						></tui-svg>
+						<a class="tui-space_left-3 tui-space_right-2" href="#" [routerLink]="['/repositories/', repo.id]" style="font-size: 16px; font-weight: 700;">{{ repo.name }}</a>
+						<tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+					</div>
+					<button
+						tuiIconButton
+						appearance="primary"
+						size="s"
+						type="button"
+						shape="rounded"
+						icon="tuiIconExternalLink"
+						[routerLink]="['/repositories/', repo.id]">
+					</button>
+				</div>
+			</tui-accordion-item>
+		</tui-accordion>
+	</div>
+</tui-island>

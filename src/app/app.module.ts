@@ -35,6 +35,7 @@ import { AngularSplitModule } from 'angular-split';
 import { ProfileComponent } from './profile/profile.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { RepoEditComponent } from './repo-edit/repo-edit.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { RepoEditComponent } from './repo-edit/repo-edit.component';
     ProfileComponent,
     MyProfileComponent,
     RepoEditComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,

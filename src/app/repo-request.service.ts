@@ -130,8 +130,15 @@ export class RepoRequestService {
     return this.http.delete(`/api/v1/repos/${repoId}`);
   }
 
-
   globalRepoSearch(body: any): Observable<any> {
     return this.http.post(`/api/v1/search/repos`, body);
+  }
+
+  repoModuleSearch(repoId: string, body: any): Observable<any> {
+    return this.http.post(`/api/v1/repos/${repoId}/search/files`, body);
+  }
+
+  repoCommitSearch(repoId: string, body: any): Observable<any> {
+    return this.http.post(`/api/v1/repos/${repoId}/search/commits`, body);
   }
 }

@@ -69,7 +69,7 @@
       </tui-breadcrumbs>
 
       <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
-        <tui-input 
+        <!-- <tui-input 
           formControlName="fileSearchValue"
           tuiTextfieldSize="m"
           [tuiTextfieldCleaner]="true"
@@ -81,7 +81,22 @@
             type="text"
             placeholder="Поиск"
             tuiTextfieldIcon="tuiIconMenu"/>
-        </tui-input>
+        </tui-input> -->
+
+        <tui-input-tag
+          formControlName="fileSearchValue"
+          tuiTextfieldSize="m"
+          [tuiTextfieldLabelOutside]="true"
+          [tuiTextfieldCleaner]="true"
+          [uniqueTags]="true"
+          [editable]="true"
+          tuiTextfieldIcon="tuiIconSearchLarge"
+          separator=";"
+          placeholder="Поиск файлов по меткам"
+          (ngModelChange)="searchModules()"
+        >
+          Поиск файлов по меткам
+        </tui-input-tag>
       </form>
     </header>
     
@@ -231,7 +246,7 @@
         Сделать коммит
       </button>
       <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%" [formGroup]="commitSearchForm">
-        <tui-input 
+        <!-- <tui-input 
           formControlName="commitSearchValue"
           tuiTextfieldSize="m"
           [tuiTextfieldCleaner]="true"
@@ -243,7 +258,22 @@
             type="text"
             placeholder="Поиск"
             tuiTextfieldIcon="tuiIconMenu"/>
-        </tui-input>
+        </tui-input> -->
+
+        <tui-input-tag
+          formControlName="commitSearchValue"
+          tuiTextfieldSize="m"
+          [tuiTextfieldLabelOutside]="true"
+          [tuiTextfieldCleaner]="true"
+          [uniqueTags]="true"
+          [editable]="true"
+          tuiTextfieldIcon="tuiIconSearchLarge"
+          separator=";"
+          placeholder="Поиск коммитов по меткам"
+          (ngModelChange)="searchCommits()"
+        >
+          Поиск коммитов по меткам
+        </tui-input-tag>
       </form>
     </header>
     

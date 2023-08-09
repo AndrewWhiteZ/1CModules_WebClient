@@ -34,6 +34,9 @@ export class RepoPresentationComponent {
   modulesList: Array<Module> = [];
   commitsList: Array<Commit> = [];
 
+  moduleList: Module[] = [];
+  commitList: Commit[] = [];
+
   fileSearchForm = new FormGroup({
     fileSearchValue: new FormControl("", Validators.nullValidator),
   });
@@ -532,6 +535,24 @@ export class RepoPresentationComponent {
         size,
       },
     ).subscribe();
+  }
+
+  searchModules() {
+    if(this.fileSearchForm.controls.fileSearchValue.value!.length > 0) {
+      this.repoRequestService.repoModuleSearch(this.repoId, { 'tags': this.fileSearchForm.controls.fileSearchValue.value }).subscribe((data: any) => {
+        this.modulesList = data["data"]["results"];
+        this.cdr.detectChanges();
+      });
+    }
+  }
+
+  searchCommits() {
+    if(this.commitSearchForm.controls.commitSearchValue.value!.length > 0) {
+      this.repoRequestService.repoCommitSearch(this.repoId, { 'tags': this.commitSearchForm.controls.commitSearchValue.value }).subscribe((data: any) => {
+        this.commitsList = data["data"]["results"];
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   readonly handler: TuiHandler<Module, readonly Module[]> = item => item.files || EMPTY_ARRAY;
