@@ -165,12 +165,13 @@ export class RepoPresentationComponent {
     .subscribe(response => {
       if(response) {
         this.repoRequestService.lockModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe(data => {
+          module.locked = true;
+          this.cdr.detectChanges();
           this.alerts.open(`Файл <b>${module.name}</b> успешно захвачен`, { 
             label: 'Захвачен', 
             status: TuiNotification.Success, 
             autoClose: false
-          }).subscribe();
-          module.locked = true;
+          }).subscribe();      
         });
       }
     }, (error: any) => {
@@ -202,12 +203,13 @@ export class RepoPresentationComponent {
     .subscribe(response => {
       if(response) {
         this.repoRequestService.unlockModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe(data => {
+          module.locked = false;
+          this.cdr.detectChanges();
           this.alerts.open(`Захват с файла <b>${module.name}</b> успешно снят`, { 
             label: 'Захват снят', 
             status: TuiNotification.Success, 
             autoClose: false
            }).subscribe();
-           module.locked = false;
         });
       }
     }, (error: any) => {

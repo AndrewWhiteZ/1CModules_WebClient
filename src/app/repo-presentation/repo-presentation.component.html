@@ -174,13 +174,7 @@
             <div class="d-flex align-items-center justify-content-between border-bottom border-2 pb-2">
               <div>
                 <h5>Последний коммит<br><b>{{ item.lastCommit.message }}</b> –
-                <span style="font-size: 18px;">{{ item.lastCommit.when.toString().slice(8, 10) + 
-                '.' + item.lastCommit.when.toString().slice(5, 7) + 
-                '.' + item.lastCommit.when.toString().slice(0, 4) + 
-                ' ' + item.lastCommit.when.toString().slice(11, 13) + 
-                ':' + item.lastCommit.when.toString().slice(14, 16) + 
-                ':' + item.lastCommit.when.toString().slice(17, 19) 
-                }}</span></h5>
+                <span style="font-size: 18px;">{{ item.lastCommit.when.toLocaleString("ru-RU") }}</span></h5>
               </div>
               <button
                 tuiIconButton
@@ -286,13 +280,7 @@
               <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
             </div>
             <div class="tui-space_right-3">
-              {{ commit.when.day + 
-                '.' + commit.when.month + 
-                '.' + commit.when.year + 
-                ' ' + commit.when.hours + 
-                ':' + commit.when.minutes + 
-                ':' + commit.when.seconds 
-              }}
+              {{ commit.when.toLocaleString("ru-RU") }}
             </div>
             <div class="d-flex align-items-center tui-space_right-3">
               <a tuiLink [routerLink]="'/profile/' + commit.author.id" style="font-size: 16px;" class="d-flex align-items-center">

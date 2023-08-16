@@ -3,7 +3,7 @@
     <div>
       <h1>{{ authorizedUser.fullName }}</h1>
       <h3>Логин: {{ authorizedUser.name }} ID: {{ authorizedUser.id }}</h3>
-      <p>{{ authorizedUser.createdOn }}</p>
+      <p>{{ authorizedUser.createdOn.toLocaleString("ru-RU") }}</p>
       <p>{{ authorizedUser.email }}</p>
     </div>
     <tui-avatar

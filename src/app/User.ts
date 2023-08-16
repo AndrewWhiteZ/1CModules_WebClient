@@ -10,7 +10,7 @@ export class User {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
-        this.createdOn = createdOn;
+        this.createdOn = new Date(createdOn);
         this.email = email;
     }
 
