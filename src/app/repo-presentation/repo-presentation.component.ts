@@ -22,6 +22,10 @@ import { ChangeDetectionStrategy } from '@angular/core';
 })
 export class RepoPresentationComponent {
 
+  radius: number = 15;
+  skeletonVisible: boolean = true;
+  skeletonCommitVisible: boolean = true;
+
   activeStepperItem: number = 0;
   dialogSubscription: Subscription = new Subscription;
   activeOutputFormat: number = 0;
@@ -31,7 +35,13 @@ export class RepoPresentationComponent {
   currentPath: string[] = [];
   currentModule: Module | null = null;
   currentCommit: Commit | null = null;
-  modulesList: Array<Module> = [];
+  modulesList: Array<Module> = [
+    new Module('___name___', '__type__', new CommitShort('__id__', '__message__', new Date()), false, null),
+    new Module('____name____', '__type__', new CommitShort('__id__', '__message__', new Date()), false, null),
+    new Module('______name______', '__type__', new CommitShort('__id__', '__message__', new Date()), false, null),
+    new Module('____name____', '__type__', new CommitShort('__id__', '__message__', new Date()), false, null),
+    new Module('_____name_____', '__type__', new CommitShort('__id__', '__message__', new Date()), false, null)
+  ];
   commitsList: Array<Commit> = [];
 
   moduleList: Module[] = [];
@@ -120,6 +130,7 @@ export class RepoPresentationComponent {
       this.modalModule.files = data;
       this.modalModulesTree[0] = { ...this.modalModule };
       this.currentCommit = null;
+      this.skeletonVisible = false;
       this.cdr.detectChanges();
     }), (error: any) => {
       error = error["error"];
@@ -133,9 +144,12 @@ export class RepoPresentationComponent {
   }
 
   showCommits() {
+    this.skeletonCommitVisible = true;
     const pathToModule = this.modulesTree.map(a => a.name).slice(1).join('/');
     this.repoRequestService.getCommitsByRepoModule(this.repoId, pathToModule + '/' + this.currentModule?.name).subscribe((data: Commit[]) => {
       this.commitsList = data;
+      this.skeletonCommitVisible = false;
+      this.cdr.detectChanges();
     }, (error: any) => {
       error = error["error"];
       this.alerts.open(error["message"], {

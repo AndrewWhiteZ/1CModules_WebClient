@@ -2,7 +2,7 @@
   <tui-island class="justify-content-between tui-space_bottom-3" size="m">
     <div class="d-flex justify-content-between">
       <div class="d-flex align-items-center">
-        <h1 class="d-flex gap-2">
+        <h1 class="d-flex gap-2" [class.tui-skeleton]="skeletonVisible">
           <tui-marker-icon
           mode="link"
           src="tuiIconGlobeLarge"
@@ -19,19 +19,32 @@
         </h1>
         <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="l" [value]="tag" class="tui-space_left-2" style="font-size: 16px;"></tui-tag>
       </div>
-      <button
-        tuiButton
-        type="button"
-        appearance="secondary"
-        icon="tuiIconEditLarge"
-        size="m"
-        class="tui-space_right-3 tui-space_bottom-3"
-        (click)="editRepo(editRepoDialogContent, 'm')"
-      >
-        Изменить
-      </button>
+      <div>
+        <button
+          tuiButton
+          type="button"
+          appearance="secondary"
+          icon="tuiIconEditLarge"
+          size="m"
+          class="tui-space_right-3 tui-space_bottom-3"
+          (click)="editRepo(editRepoDialogContent, 'm')"
+        >
+          Изменить
+        </button>
+        <button
+          tuiButton
+          type="button"
+          appearance="secondary-destructive"
+          icon="tuiIconTrash2Large"
+          size="m"
+          class="tui-space_right-3 tui-space_bottom-3"
+          (click)="deleteRepo()"
+        >
+          Удалить
+        </button>
+      </div>
     </div>
-    <p>{{ repo.description }}</p>
+    <p [class.tui-skeleton]="skeletonVisible">{{ repo.description }}</p>
   </tui-island>
   <tui-island class="p-0">
     <header class="d-flex border-bottom justify-content-between px-4 pb-2">
@@ -82,20 +95,23 @@
                 size="s"
                 src="tuiIconCodesandboxLarge"
                 *ngIf="profile.accessLevel.roleName == 'MANAGER'"
+                [class.tui-skeleton]="skeletonVisible"
               ></tui-marker-icon>
               <tui-marker-icon
                 mode="success"
                 size="s"
                 src="tuiIconCodepenLarge"
                 *ngIf="profile.accessLevel.roleName == 'CONTRIBUTOR'"
+                [class.tui-skeleton]="skeletonVisible"
               ></tui-marker-icon>
               <tui-marker-icon
                 mode="link"
                 size="s"
                 src="tuiIconHexagonLarge"
                 *ngIf="profile.accessLevel.roleName == 'VIEWER'"
+                [class.tui-skeleton]="skeletonVisible"
               ></tui-marker-icon>
-              <a tuiLink [routerLink]="'/profile/' + profile.user.id" style="font-size: 18px;" class="d-flex align-items-center">
+              <a tuiLink [routerLink]="'/profile/' + profile.user.id" style="font-size: 18px;" class="d-flex align-items-center" [class.tui-skeleton]="skeletonVisible">
                 <tui-avatar
                   [text]="profile.user.fullName"
                   size="s"
@@ -106,7 +122,7 @@
                 <b>{{ profile.user.fullName }}</b>
               </a>
             </div>
-            <div class="tui-space_right-3">
+            <div class="tui-space_right-3" [class.tui-skeleton]="skeletonVisible">
               {{ profile.user.name }}
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -139,6 +155,7 @@
             formControlName="userIdValue"
             [tuiTextfieldLabelOutside]="true"
             [tuiTextfieldCleaner]="true"
+            tuiHintContent="Уникальный идентификатор пользователя"
             class="tui-space_top-3">
             ID пользователя
           </tui-input>
@@ -147,6 +164,7 @@
           <tui-select
               formControlName="dropdownValue"
               [valueContent]="personValueContent"
+              [tuiHintContent]="tooltipRoles"
           >
               Выберите роль
               <tui-data-list-wrapper
@@ -154,6 +172,13 @@
                   [items]="roles"
               ></tui-data-list-wrapper>
           </tui-select>
+          <ng-template
+              #tooltipRoles
+          >
+            <p><b>Администратор:</b> имеет полные права, но не может удалять репозиторий</p>
+            <p><b>Участник:</b> может просматривать, делать коммиты и скачивать</p>
+            <b>Гость:</b> может только просматривать и скачивать
+          </ng-template>
           <ng-template
               #personValueContent
               let-data
@@ -227,6 +252,7 @@
             [uniqueTags]="true"
             separator=";"
             formControlName="tagsValue"
+            tuiHintContent="После написания каждой метки необходимо отделить её с помощью ';'"
             class="tui-space_top-2"
             [tuiTextfieldCleaner]="true"
             [tuiTextfieldLabelOutside]="true"

@@ -69,7 +69,7 @@
     </tui-tabs>
   </header>
 
-  <div style="height: 730px; overflow: overlay;">
+  <div style="min-height: 0; max-height: 100%; overflow-y: auto;">
     <div *ngIf="activeFormatTab == 0" class="m-3">
       <tui-island *ngFor="let repo of repoList; let i = index" class="p-3 mb-2">
         <div class="d-flex justify-content-between align-items-center">
@@ -121,15 +121,6 @@
               (click)="passInfo(repo)"
               [routerLink]="['/repositories/', repo.id, 'edit']">
             </button>
-            <button
-              tuiIconButton
-              appearance="secondary"
-              size="m"
-              type="button"
-              shape="rounded"
-              class="tui-space_right-3"
-              icon="tuiIconInfo">
-            </button>
           </div>
         </div>
       </tui-island>
@@ -150,7 +141,16 @@
               *ngIf="!repo.isPublic"
             ></tui-svg>
             <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
-            <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+            
+            <tui-items-with-more>
+              <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+              <ng-template
+                tuiMore
+                let-index
+              >
+                and {{ repo.tags.length - index - 1 }} more
+              </ng-template>
+            </tui-items-with-more>
           </div>
           <div class="tui-island__paragraph">
             {{ repo.description }}
@@ -176,15 +176,6 @@
               icon="tuiIconEdit"
               (click)="passInfo(repo)"
               [routerLink]="['/repositories/', repo.id, 'edit']">
-            </button>
-            <button
-              tuiIconButton
-              appearance="secondary"
-              size="m"
-              type="button"
-              shape="rounded"
-              class="tui-space_right-3"
-              icon="tuiIconInfo">
             </button>
           </div>
         </tui-island>
@@ -342,14 +333,6 @@
                 icon="tuiIconEdit"
                 (click)="passInfo(repo)"
                 [routerLink]="['/repositories/', repo.id, 'edit']">
-              </button>
-              <button
-                tuiIconButton
-                appearance="secondary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconInfo">
               </button>
             </div>
           </td>

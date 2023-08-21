@@ -21,12 +21,19 @@ import { Subscription } from 'rxjs';
 export class RepoEditComponent {
   editing = false;
 
+  radius: number = 15;
+  skeletonVisible: boolean = true;
+
   dialogSubscription: Subscription = new Subscription;
   repoId: string = '';
   routePieces: string[] = [];
-  repo: Repository = new Repository('_1', 'repo', 'desc', [''], new User('_1', '', '', new Date(), null), false);
-  accessLevel: AccessLevel = new AccessLevel(false, false, false, "UNKNOWN");
-  repoProfiles: Profile[] = [];
+  repo: Repository = new Repository('__id__', '__name__', '__description__', [''], new User('__id__', '__name__', '__fullName__', new Date(), null), false);
+  accessLevel: AccessLevel = new AccessLevel(false, false, false, '__role__');
+  repoProfiles: Profile[] = [
+    new Profile(new User('__id__', '__name__', '__fullName__', new Date(), null), new AccessLevel(false, false, false, '__role__')),
+    new Profile(new User('__id__', '__name__', '__fullName__', new Date(), null), new AccessLevel(false, false, false, '__role__')),
+    new Profile(new User('__id__', '__name__', '__fullName__', new Date(), null), new AccessLevel(false, false, false, '__role__'))
+  ];
 
   availableRoles: Map<string, string> = new Map([['Администратор', 'MANAGER'], ['Участник', 'CONTRIBUTOR'], ['Гость', 'VIEWER']]);
   roles: Array<string> = [...Array.from(this.availableRoles.keys())];
@@ -63,6 +70,7 @@ export class RepoEditComponent {
       this.repo = data["data"]["repo"];
       this.repo.creator = data["data"]["repo"]["owner"];
       this.accessLevel = data["data"]["myAccessLevel"];
+      this.skeletonVisible = false;
       this.cdr.detectChanges();
     });
   }
@@ -202,6 +210,48 @@ export class RepoEditComponent {
         size,
       },
     ).subscribe();
+  }
+
+  deleteRepo() {
+    const data: TuiPromptData = {
+      content: `Вы действительно хотите удалить репозиторий <b>${this.repo.name}</b>?`,
+      yes: 'Да, удалить репозиторий',
+      no: 'Отмена',
+    };
+
+    this.dialogs.open<boolean>(TUI_PROMPT, {
+      label: "",
+      size: "m",
+      data,
+    }).subscribe(response => {
+      if(response) {
+        this.repoRequest.deleteRepo(this.repo.id).subscribe((data: any) => {
+          if(data["status"] == 0) {
+            this.alerts.open(`Репозиторий <b>${this.repo.name}</b> успешно удален`, { 
+              label: 'Удален', 
+              status: TuiNotification.Success, 
+              autoClose: false
+            }).subscribe();
+            this.dialogSubscription.unsubscribe();
+            this.cdr.detectChanges();
+          } else {
+            this.alerts.open(`${data["message"]}`, { 
+              label: 'Ошибка', 
+              status: TuiNotification.Error, 
+              autoClose: false
+            }).subscribe();
+          }
+        }, (error: any) => {
+          error = error["error"];
+          this.alerts.open(error["message"], {
+            label: 'Ошибка', 
+            status: TuiNotification.Error, 
+            autoClose: false
+          }).subscribe();
+          this.cdr.detectChanges();
+        });
+      }
+    });
   }
 
   closeDialog() {

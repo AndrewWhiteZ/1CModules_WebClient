@@ -2,7 +2,8 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@
 import { User } from '../User';
 import { Repository } from '../Repository';
 import { ProfileRequestService } from '../profile-request.service';
-import { TUI_PROMPT, TuiPromptData } from '@taiga-ui/kit';
+import { TUI_PROMPT, TUI_ARROW, TuiPromptData } from '@taiga-ui/kit';
+import { TransferDataService } from '../transfer-data.service';
 import { TuiAlertService, TuiDialogService, TuiNotification, TuiDialogContext, TuiDialogSize } from '@taiga-ui/core';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { RepoRequestService } from '../repo-request.service';
@@ -16,14 +17,22 @@ import { Subscription } from 'rxjs';
 })
 export class MyProfileComponent {
 
+  radius = 15;
+  skeletonVisible = true;
+
   dialogSubscription: Subscription = new Subscription;
   authorizedUser: User = new User("ID пользователя", "Логин", "Полное имя", new Date(), "Адрес электронной почты");
   userPublicRepoList: Repository[] = [];
+  activeFormatTab: number = 0;
+
+  arrow = TUI_ARROW;
+  columns = ['name', 'isPublic', 'tags', 'description', 'actions'];
 
   constructor(
     private cdr: ChangeDetectorRef, 
     private profileService: ProfileRequestService,
     private repoService: RepoRequestService,
+    private dataService: TransferDataService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
     ) {
@@ -39,6 +48,7 @@ export class MyProfileComponent {
   showUserPublicRepos() {
     this.profileService.getProfilePublicRepos(this.authorizedUser.id).subscribe((data: any) => {
       this.userPublicRepoList = data;
+      this.skeletonVisible = false;
       this.cdr.detectChanges();
     }, (error: any) => {
       error = error["error"];
@@ -49,6 +59,10 @@ export class MyProfileComponent {
       }).subscribe();
       this.cdr.detectChanges();
     });
+  }
+
+  passInfo(repo: Repository) {
+    this.dataService.updateCurrentData(repo);
   }
 
   deleteRepo(repo: Repository) {

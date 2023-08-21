@@ -1,6 +1,15 @@
 .container-fluid {
   padding: 0;
-  height: 90vh;
+  //height: 100vh;
+}
+
+tui-root {
+  display: block;
+  height: 100vh;
+}
+
+:host {
+  height: 100%;
 }
 
 div .opened {

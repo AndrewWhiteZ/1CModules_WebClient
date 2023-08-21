@@ -12,6 +12,9 @@ import { Repository } from '../Repository';
 })
 export class ProfileComponent {
 
+  radius: number = 15;
+  skeletonVisible: boolean = true;
+
   user: User = new User("ID пользователя", "Логин", "Полное имя", new Date(), "Адрес электронной почты");
   userPublicRepoList: Repository[] = [];
 
@@ -34,6 +37,7 @@ export class ProfileComponent {
   showUserPublicRepos() {
     this.profileService.getProfilePublicRepos(this.user.id).subscribe((data: any) => {
       this.userPublicRepoList = data;
+      this.skeletonVisible = false;
       this.cdr.detectChanges();
     }, (error: any) => {
       error = error["error"];

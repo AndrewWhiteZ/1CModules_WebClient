@@ -1,5 +1,5 @@
 <tui-root>
-  <div class="container-fluid flex-column">
+  <div class="d-flex flex-column flex-grow-1 container-fluid vh-100"> 
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-2 border-bottom shadow-4">
       <div class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
         <button
@@ -174,7 +174,7 @@
       </div>
     </header>
 
-    <div class="d-flex">
+    <div class="d-flex flex-grow-1">
       <aside class="d-flex flex-column flex-shrink-0 border-end shadow-4" [ngClass]="sidebarOpened ? 'opened' : 'closed'">
         <tui-accordion class="container-fluid" [rounded]="false" [closeOthers]="false">
           <tui-accordion-item routerLink="/home" [showArrow]="false"> 
@@ -182,102 +182,11 @@
           </tui-accordion-item>
           <tui-accordion-item routerLink="/repositories" [showArrow]="false">
             Репозитории
-            <!-- <ng-template tuiAccordionItemContent>
-              <div #content class="pb-2 mb-2 border-bottom">
-                <a routerLink="/repositories" class="">Открыть список</a>
-              </div>
-              <ul class="tui-list tui-list_linear ps-0">
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/repositories/1">Repo 1</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/repositories/2">Repo 2</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/repositories/3">Repo 3</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-              </ul>    
-            </ng-template> -->
           </tui-accordion-item>
-          <!-- <tui-accordion-item>
-            Отрывки
-            <ng-template tuiAccordionItemContent>
-              <div #content class="pb-2 mb-2 border-bottom">
-                <a routerLink="/repositories" class="">Открыть список</a>
-              </div>
-              <ul class="tui-list tui-list_linear ps-0">
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/snippets/1">Snippet 1</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/snippets/2">Snippet 2</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-                <li class="tui-list__item d-flex justify-content-between">
-                  <a routerLink="/snippets/3">Snippet 3</a>
-                  <button
-                    tuiIconButton
-                    appearance="flat"
-                    size="xs"
-                    icon="tuiIconClose"
-                    shape="rounded"
-                    title="Remove"
-                    class="remove"
-                  ></button>
-                </li>
-              </ul>    
-            </ng-template>
-          </tui-accordion-item> -->
         </tui-accordion>
       </aside>   
-      <main class="container-fluid">
-        <div class="p-3 rounded border-1">
-          <router-outlet></router-outlet>
-        </div> 
+      <main class="container-fluid p-3 rounded border-1">
+        <router-outlet></router-outlet>
       </main>
     </div>
   </div>

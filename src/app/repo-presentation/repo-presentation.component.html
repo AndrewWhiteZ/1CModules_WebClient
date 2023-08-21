@@ -1,324 +1,314 @@
-<div class="d-flex gap-3">
-  <tui-island class="p-0" style="width: 50%;">
-    <header class="d-flex border-bottom justify-content-between px-0 pb-2">
-      <tui-tabs [(activeItemIndex)]="activeOutputFormat" class="tui-space_left-3">
-        <button
-          tuiTab
-          class="px-2"
-        >
-          <tui-svg
-            src="tuiIconListLarge"
-            class="tui-space_right-2"
-          ></tui-svg>
-          Список
-        </button>
-        <button
-          tuiTab
-          class="px-2"
-        >
-          <tui-svg
-            src="tuiIconGitPullRequestLarge"
-            class="tui-space_right-2"
-          ></tui-svg>
-          Дерево
-        </button>
-      </tui-tabs>
-
-      <!-- <tui-breadcrumbs
-        size="l"
-        class="tui-space_top-3"
-      >
-        <ng-container *ngFor="let module of modulesTree">
-          <a *tuiItem tuiLink>
-            {{ module.name }}
-          </a>
-        </ng-container>
-      </tui-breadcrumbs> -->
-
-      <tui-breadcrumbs [style.color]="'red'" size="l" class="tui-space_top-3">
-        <tui-hosted-dropdown
-          *tuiItem
-          [content]="breadcrumbContent"
-        >
-          <button
-            tuiIconButton
-            icon="tuiIconMoreHorizontal"
-            size="s"
-            appearance="secondary"
-            title="Ещё"
-          ></button>
-          <ng-template #breadcrumbContent>
-            <tui-data-list>
+<div class="d-flex gap-3" style="height: 100%;">
+  <as-split direction="horizontal">
+    <as-split-area [size]="50" class="tui-space_right-1">
+      <tui-island class="p-0">
+        <header class="d-flex border-bottom justify-content-between px-0 pb-2">
+          <tui-tabs [(activeItemIndex)]="activeOutputFormat" class="tui-space_left-3">
+            <button
+              tuiTab
+              class="px-2"
+            >
+              <tui-svg
+                src="tuiIconListLarge"
+                class="tui-space_right-2"
+              ></tui-svg>
+              Список
+            </button>
+            <button
+              tuiTab
+              class="px-2"
+            >
+              <tui-svg
+                src="tuiIconGitPullRequestLarge"
+                class="tui-space_right-2"
+              ></tui-svg>
+              Дерево
+            </button>
+          </tui-tabs>
+    
+          <tui-breadcrumbs [style.color]="'red'" size="l" class="tui-space_top-3">
+            <tui-hosted-dropdown
+              *tuiItem
+              [content]="breadcrumbContent"
+            >
+              <button
+                tuiIconButton
+                icon="tuiIconMoreHorizontal"
+                size="s"
+                appearance="secondary"
+                title="Ещё"
+              ></button>
+              <ng-template #breadcrumbContent>
+                <tui-data-list>
+                  <a
+                    *ngFor="let module of modulesTree.slice(0, modulesTree.length - maxBreadcrumbElements)"
+                    tuiOption
+                  >
+                    {{ module.name }}
+                  </a>
+                </tui-data-list>
+              </ng-template>
+            </tui-hosted-dropdown>
+            <ng-container *ngFor="let module of modulesTree.slice(modulesTree.length - maxBreadcrumbElements)">
               <a
-                *ngFor="let module of modulesTree.slice(0, modulesTree.length - maxBreadcrumbElements)"
-                tuiOption
+                *tuiItem
+                tuiLink
               >
                 {{ module.name }}
               </a>
-            </tui-data-list>
-          </ng-template>
-        </tui-hosted-dropdown>
-        <ng-container *ngFor="let module of modulesTree.slice(modulesTree.length - maxBreadcrumbElements)">
-          <a
-            *tuiItem
-            tuiLink
-          >
-            {{ module.name }}
-          </a>
-        </ng-container>
-      </tui-breadcrumbs>
-
-      <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
-        <!-- <tui-input 
-          formControlName="fileSearchValue"
-          tuiTextfieldSize="m"
-          [tuiTextfieldCleaner]="true"
-          [tuiTextfieldLabelOutside]="true"
-          tuiTextfieldIconLeft="tuiIconSearch">
-          Поиск по файлам
-          <input
-            tuiTextfield
-            type="text"
-            placeholder="Поиск"
-            tuiTextfieldIcon="tuiIconMenu"/>
-        </tui-input> -->
-
-        <tui-input-tag
-          formControlName="fileSearchValue"
-          tuiTextfieldSize="m"
-          [tuiTextfieldLabelOutside]="true"
-          [tuiTextfieldCleaner]="true"
-          [uniqueTags]="true"
-          [editable]="true"
-          tuiTextfieldIcon="tuiIconSearchLarge"
-          separator=";"
-          placeholder="Поиск файлов по меткам"
-          (ngModelChange)="searchModules()"
-        >
-          Поиск файлов по меткам
-        </tui-input-tag>
-      </form>
-    </header>
+            </ng-container>
+          </tui-breadcrumbs>
     
-    <div *ngIf="activeOutputFormat == 0" style="overflow: overlay;">
-      <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-        <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex">
-              <div class="tui-space_right-3">
-                <tui-svg src="tuiIconFolderMinusLarge"></tui-svg>
+          <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
+            <tui-input-tag
+              formControlName="fileSearchValue"
+              tuiTextfieldSize="m"
+              [tuiTextfieldLabelOutside]="true"
+              [tuiTextfieldCleaner]="true"
+              [uniqueTags]="true"
+              [editable]="true"
+              tuiTextfieldIcon="tuiIconSearchLarge"
+              separator=";"
+              placeholder="Поиск файлов по меткам"
+              (ngModelChange)="searchModules()"
+            >
+              Поиск файлов по меткам
+            </tui-input-tag>
+          </form>
+        </header>
+        
+        <div *ngIf="activeOutputFormat == 0" style="overflow: overlay;">
+          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+            <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFolderMinusLarge" [class.tui-skeleton]="skeletonVisible"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-3">
+                    <b [class.tui-skeleton]="skeletonVisible">...</b>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    tuiIconButton
+                    appearance="primary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowUpCircle"
+                    [class.tui-skeleton]="skeletonVisible"
+                    (click)="moveToParentDirectory()">
+                  </button>
+                </div>
               </div>
-              <div class="tui-space_right-3">
-                <b>...</b>
+            </tui-accordion-item>
+            <tui-accordion-item *ngFor="let item of module.files" [showArrow]="false" size="s" (click)="openAccordionItem(item)" (dblclick)="moveToChildDirectory(item)">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="tui-space_right-3">
+                    <tui-svg src="tuiIconFileLarge" *ngIf="!item.files" [class.tui-skeleton]="skeletonVisible"></tui-svg>
+                    <tui-svg src="tuiIconFolderPlusLarge" *ngIf="!!item.files" [class.tui-skeleton]="skeletonVisible"></tui-svg>
+                  </div>
+                  <div class="tui-space_right-4">
+                    <b [class.tui-skeleton]="skeletonVisible">{{ item.name }}</b>
+                  </div>
+                </div>
+                <div *ngIf="!item.files">
+                  <button
+                    tuiIconButton
+                    appearance="secondary-destructive"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconLock"
+                    *ngIf="item.locked"
+                    [class.tui-skeleton]="skeletonVisible"
+                    (click)="unlockFile($event, item)">
+                  </button>
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconUnlock"
+                    *ngIf="!item.locked"
+                    [class.tui-skeleton]="skeletonVisible"
+                    (click)="lockFile($event, item)">
+                  </button>      
+                </div>
+                <div *ngIf="!!item.files">
+                  <button
+                    tuiIconButton
+                    appearance="primary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconArrowDownCircle"
+                    [class.tui-skeleton]="skeletonVisible"
+                    (click)="moveToChildDirectory(item)">
+                  </button>
+                </div>
               </div>
-            </div>
-            <div>
-              <button
-                tuiIconButton
-                appearance="primary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconArrowUpCircle"
-                (click)="moveToParentDirectory()">
-              </button>
-            </div>
-          </div>
-        </tui-accordion-item>
-        <tui-accordion-item *ngFor="let item of module.files" [showArrow]="false" size="s" (click)="openAccordionItem(item)" (dblclick)="moveToChildDirectory(item)">
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex">
-              <div class="tui-space_right-3">
-                <tui-svg src="tuiIconFileLarge" *ngIf="!item.files"></tui-svg>
-                <tui-svg src="tuiIconFolderPlusLarge" *ngIf="!!item.files"></tui-svg>
-              </div>
-              <div class="tui-space_right-4">
-                <b>{{ item.name }}</b>
-              </div>
-            </div>
-            <div *ngIf="!item.files">
-              <button
-                tuiIconButton
-                appearance="secondary-destructive"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconLock"
-                *ngIf="item.locked"
-                (click)="unlockFile($event, item)">
-              </button>
-              <button
-                tuiIconButton
-                appearance="secondary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconUnlock"
-                *ngIf="!item.locked"
-                (click)="lockFile($event, item)">
-              </button>      
-            </div>
-            <div *ngIf="!!item.files">
-              <button
-                tuiIconButton
-                appearance="primary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconArrowDownCircle"
-                (click)="moveToChildDirectory(item)">
-              </button>
-            </div>
-          </div>
-          <ng-template tuiAccordionItemContent *ngIf="!item.files">
-            <div class="d-flex align-items-center justify-content-between border-bottom border-2 pb-2">
-              <div>
-                <h5>Последний коммит<br><b>{{ item.lastCommit.message }}</b> –
-                <span style="font-size: 18px;">{{ item.lastCommit.when.toLocaleString("ru-RU") }}</span></h5>
-              </div>
-              <button
-                tuiIconButton
-                appearance="secondary"
-                size="m"
-                type="button"
-                shape="rounded"
-                class="tui-space_left-3"
-                icon="tuiIconDownloadLarge"
-                (click)="downloadLastCommit($event, item)">
-              </button>
-            </div>
-            <div class="d-flex align-items-center tui-space_top-3 gap-2">
-              <button
-                tuiButton
-                appearance="primary"
-                size="m"
-                type="button"
-                icon="tuiIconEdit"
-                (click)="openEditModuleDialog(editModuleDialogContent, 'm')">
-                Изменить
-              </button>
-              <button
-                tuiButton
-                appearance="secondary-destructive"
-                size="m"
-                type="button"
-                icon="tuiIconTrash2"
-                (click)="deleteFile(item)">
-                Удалить
-              </button>
-            </div>
-          </ng-template>
-        </tui-accordion-item>
-      </tui-accordion>
-    </div>
-
-    <div *ngIf="activeOutputFormat == 1" style="overflow: overlay;">
-      <tui-tree 
-        *ngFor="let item of module.files"
-        [tuiTreeController]="true"
-        [value]="item"
-        [content]="content"
-        [childrenHandler]="handler">
-      </tui-tree>
-    </div>
+              <ng-template tuiAccordionItemContent *ngIf="!item.files">
+                <div class="d-flex align-items-center justify-content-between border-bottom border-2 pb-2">
+                  <div>
+                    <h5 [class.tui-skeleton]="skeletonCommitVisible">Последний коммит<br><b>{{ item.lastCommit.message }}</b> –
+                    <span style="font-size: 18px;" [class.tui-skeleton]="skeletonCommitVisible">{{ item.lastCommit.when.toLocaleString("ru-RU") }}</span></h5>
+                  </div>
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="m"
+                    type="button"
+                    shape="rounded"
+                    class="tui-space_left-3"
+                    icon="tuiIconDownloadLarge"
+                    [class.tui-skeleton]="skeletonCommitVisible"
+                    (click)="downloadLastCommit($event, item)">
+                  </button>
+                </div>
+                <div class="d-flex align-items-center tui-space_top-3 gap-2">
+                  <button
+                    tuiButton
+                    appearance="primary"
+                    size="m"
+                    type="button"
+                    icon="tuiIconEdit"
+                    [class.tui-skeleton]="skeletonCommitVisible"
+                    (click)="openEditModuleDialog(editModuleDialogContent, 'm')">
+                    Изменить
+                  </button>
+                  <button
+                    tuiButton
+                    appearance="secondary-destructive"
+                    size="m"
+                    type="button"
+                    icon="tuiIconTrash2"
+                    [class.tui-skeleton]="skeletonCommitVisible"
+                    (click)="deleteFile(item)">
+                    Удалить
+                  </button>
+                </div>
+              </ng-template>
+            </tui-accordion-item>
+          </tui-accordion>
+        </div>
     
-    <ng-template #content let-item>
-      {{ item.name }}
-    </ng-template>
-  </tui-island>
-
-  <tui-island class="p-0" style="width: 50%;">
-    <header class="d-flex border-bottom justify-content-between align-items-center">
-      <button
-        tuiButton
-        appearance="secondary"
-        size="m"
-        type="button"
-        icon="tuiIconUploadLarge"
-        class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
-        (click)="createCommit(dialogContent, dialogHeader, 'm')">
-        Сделать коммит
-      </button>
-      <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%" [formGroup]="commitSearchForm">
-        <!-- <tui-input 
-          formControlName="commitSearchValue"
-          tuiTextfieldSize="m"
-          [tuiTextfieldCleaner]="true"
-          [tuiTextfieldLabelOutside]="true"
-          tuiTextfieldIconLeft="tuiIconSearch">
-          Поиск по коммитам
-          <input
-            tuiTextfield
-            type="text"
-            placeholder="Поиск"
-            tuiTextfieldIcon="tuiIconMenu"/>
-        </tui-input> -->
-
-        <tui-input-tag
-          formControlName="commitSearchValue"
-          tuiTextfieldSize="m"
-          [tuiTextfieldLabelOutside]="true"
-          [tuiTextfieldCleaner]="true"
-          [uniqueTags]="true"
-          [editable]="true"
-          tuiTextfieldIcon="tuiIconSearchLarge"
-          separator=";"
-          placeholder="Поиск коммитов по меткам"
-          (ngModelChange)="searchCommits()"
-        >
-          Поиск коммитов по меткам
-        </tui-input-tag>
-      </form>
-    </header>
+        <div *ngIf="activeOutputFormat == 1" style="overflow: overlay;">
+          <tui-tree 
+            *ngFor="let item of module.files"
+            [tuiTreeController]="true"
+            [value]="item"
+            [content]="content"
+            [childrenHandler]="handler">
+          </tui-tree>
+        </div>
+        
+        <ng-template #content let-item>
+          {{ item.name }}
+        </ng-template>
+      </tui-island>  
+    </as-split-area>
+    <as-split-area [size]="50" class="tui-space_left-1">
+      <tui-island class="p-0">
+        <header class="d-flex border-bottom justify-content-between align-items-center">
+          <button
+            tuiButton
+            appearance="secondary"
+            size="m"
+            type="button"
+            icon="tuiIconUploadLarge"
+            class="tui-space_left-3 tui-space_top-3 tui-space_bottom-2"
+            (click)="createCommit(dialogContent, dialogHeader, 'm')">
+            Сделать коммит
+          </button>
+          <form class="b-form tui-space_right-3 tui-space_top-1" style="width: 35%" [formGroup]="commitSearchForm">
+            <!-- <tui-input 
+              formControlName="commitSearchValue"
+              tuiTextfieldSize="m"
+              [tuiTextfieldCleaner]="true"
+              [tuiTextfieldLabelOutside]="true"
+              tuiTextfieldIconLeft="tuiIconSearch">
+              Поиск по коммитам
+              <input
+                tuiTextfield
+                type="text"
+                placeholder="Поиск"
+                tuiTextfieldIcon="tuiIconMenu"/>
+            </tui-input> -->
     
-    <div style="overflow: overlay;">
-      <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
-        <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s" (click)="currentCommit = commit">
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
-              <b>{{ commit.message }}</b>
-              <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
-            </div>
-            <div class="tui-space_right-3">
-              {{ commit.when.toLocaleString("ru-RU") }}
-            </div>
-            <div class="d-flex align-items-center tui-space_right-3">
-              <a tuiLink [routerLink]="'/profile/' + commit.author.id" style="font-size: 16px;" class="d-flex align-items-center">
-                <tui-avatar
-                  [text]="commit.author.fullName"
-                  size="s"
-                  class="tui-space_right-3"
-                  [rounded]="true"
-                  [autoColor]="true"
-                ></tui-avatar>
-                {{ commit.author.fullName }}
-              </a>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <button
-                tuiIconButton
-                appearance="primary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconDownload"
-                (click)="downloadCommit($event, commit)">
-              </button>
-              <button
-                tuiIconButton
-                appearance="secondary"
-                size="s"
-                type="button"
-                shape="rounded"
-                icon="tuiIconEdit3"
-                (click)="openEditCommitDialog(editCommitDialogContent, 'm', commit)">
-              </button>
-            </div>
-          </div>
-        </tui-accordion-item>
-      </tui-accordion>
-    </div>
-  </tui-island>
+            <tui-input-tag
+              formControlName="commitSearchValue"
+              tuiTextfieldSize="m"
+              [tuiTextfieldLabelOutside]="true"
+              [tuiTextfieldCleaner]="true"
+              [uniqueTags]="true"
+              [editable]="true"
+              tuiTextfieldIcon="tuiIconSearchLarge"
+              separator=";"
+              placeholder="Поиск коммитов по меткам"
+              (ngModelChange)="searchCommits()"
+            >
+              Поиск коммитов по меткам
+            </tui-input-tag>
+          </form>
+        </header>
+        
+        <div style="overflow: overlay;">
+          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+            <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s" (click)="currentCommit = commit">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
+                  <b [class.tui-skeleton]="skeletonCommitVisible">{{ commit.message }}</b>
+                  <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1" [class.tui-skeleton]="skeletonCommitVisible"></tui-tag>
+                </div>
+                <div class="tui-space_right-3" [class.tui-skeleton]="skeletonCommitVisible">
+                  {{ commit.when.toLocaleString("ru-RU") }}
+                </div>
+                <div class="d-flex align-items-center tui-space_right-3">
+                  <a tuiLink [routerLink]="'/profile/' + commit.author.id" style="font-size: 16px;" class="d-flex align-items-center" [class.tui-skeleton]="skeletonCommitVisible">
+                    <tui-avatar
+                      [text]="commit.author.fullName"
+                      size="s"
+                      class="tui-space_right-3"
+                      [rounded]="true"
+                      [autoColor]="true"
+                      [class.tui-skeleton]="skeletonCommitVisible"
+                    ></tui-avatar>
+                    {{ commit.author.fullName }}
+                  </a>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button
+                    tuiIconButton
+                    appearance="primary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconDownload"
+                    [class.tui-skeleton]="skeletonCommitVisible"
+                    (click)="downloadCommit($event, commit)">
+                  </button>
+                  <button
+                    tuiIconButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    shape="rounded"
+                    icon="tuiIconEdit3"
+                    [class.tui-skeleton]="skeletonCommitVisible"
+                    (click)="openEditCommitDialog(editCommitDialogContent, 'm', commit)">
+                  </button>
+                </div>
+              </div>
+            </tui-accordion-item>
+          </tui-accordion>
+        </div>
+      </tui-island>
+    </as-split-area>
+  </as-split>
 </div>
 
 <ng-template #dialogHeader>
