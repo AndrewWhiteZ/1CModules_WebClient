@@ -447,7 +447,7 @@
               formControlName="pathValue"
               [tuiTextfieldLabelOutside]="true"
               [tuiTextfieldCleaner]="true"
-              [tuiTextfieldPostfix]="this.commitForm.controls.filenameValue.value ? this.commitForm.controls.filenameValue.value : ''"
+              [tuiTextfieldPostfix]="this.commitForm.controls.filenameValue.value || 'sss'"
               tuiTextfieldSize="m"
               class="tui-space_bottom-3"
               style="width: 70%;">

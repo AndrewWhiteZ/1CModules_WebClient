@@ -123,6 +123,10 @@ export class RepoPresentationComponent {
     }
   }
 
+  filenameChangeHandler() {
+    this.commitForm.patchValue({ pathValue: this.commitForm.controls.filenameValue.value });
+  }
+
   showModules() {
     this.repoRequestService.getModulesByRepoId(this.repoId).subscribe((data: Module[]) => { 
       this.module.files = data;
@@ -413,6 +417,10 @@ export class RepoPresentationComponent {
 
   commitRequest() {
     const formData: FormData = new FormData();
+
+    if (this.moduleList.length > 1) {
+      
+    }
 
     formData.append("path", this.commitForm.controls.pathValue.value ? this.commitForm.controls.pathValue.value : '');
     formData.append("message", this.commitForm.controls.commitMessageValue.value ? this.commitForm.controls.commitMessageValue.value : '');
