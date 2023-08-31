@@ -33,7 +33,7 @@ export class MyProfileComponent {
     private profileService: ProfileRequestService,
     private repoService: RepoRequestService,
     private dataService: TransferDataService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    @Inject(TuiDialogService) readonly dialogs: TuiDialogService,
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
     ) {
   }
