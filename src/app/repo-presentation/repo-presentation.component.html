@@ -155,7 +155,7 @@
                 <div class="d-flex align-items-center justify-content-between border-bottom border-2 pb-2">
                   <div>
                     <h5 [class.tui-skeleton]="skeletonCommitVisible">Последний коммит<br><b>{{ item.lastCommit.message }}</b> –
-                    <span style="font-size: 18px;" [class.tui-skeleton]="skeletonCommitVisible">{{ item.lastCommit.when.toLocaleString("ru-RU") }}</span></h5>
+                    <span style="font-size: 18px;" [class.tui-skeleton]="skeletonCommitVisible">{{ item.lastCommit.when.toLocaleString("ru-RU", {timeZone: "Asia/Yekaterinburg"}) }}</span></h5>
                   </div>
                   <button
                     tuiIconButton
@@ -265,7 +265,7 @@
                   <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1" [class.tui-skeleton]="skeletonCommitVisible"></tui-tag>
                 </div>
                 <div class="tui-space_right-3" [class.tui-skeleton]="skeletonCommitVisible">
-                  {{ commit.when.toLocaleString("ru-RU") }}
+                  {{ commit.when.toLocaleString("ru-RU", {timeZone: "Asia/Yekaterinburg"}) }}
                 </div>
                 <div class="d-flex align-items-center tui-space_right-3">
                   <a tuiLink [routerLink]="'/profile/' + commit.author.id" style="font-size: 16px;" class="d-flex align-items-center" [class.tui-skeleton]="skeletonCommitVisible">

@@ -422,7 +422,30 @@ export class RepoPresentationComponent {
       
     }
 
-    formData.append("path", this.commitForm.controls.pathValue.value ? this.commitForm.controls.pathValue.value : '');
+    const correctedPath = this.commitForm.controls.pathValue.value;
+
+    const fullfilledPath = correctedPath + "/" + this.commitForm.controls.filenameValue.value;
+
+    const filePath = this.commitForm.controls.fileValue.value.name;
+    let newPath = "";
+
+    console.log(fullfilledPath);
+    console.log(filePath);
+
+    if (fullfilledPath?.indexOf(".") !== undefined) {
+      let filePathPieces = filePath!.split(".");
+      let extension = filePathPieces.reverse()[0];
+
+      console.log(filePathPieces);
+
+      let fullfilledPathExt = fullfilledPath!.split(".").reverse()[0];
+
+      newPath = fullfilledPathExt !== undefined ? fullfilledPath + "." + extension : fullfilledPath;
+    }
+
+    console.log(newPath);
+
+    formData.append("path", newPath);
     formData.append("message", this.commitForm.controls.commitMessageValue.value ? this.commitForm.controls.commitMessageValue.value : '');
     formData.append("fileDescription", this.commitForm.controls.descriptionValue.value ? this.commitForm.controls.descriptionValue.value : '');
     formData.append("fileTags", '');

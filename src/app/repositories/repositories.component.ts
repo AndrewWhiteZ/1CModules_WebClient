@@ -15,6 +15,10 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepositoriesComponent {
+
+  radius: number = 15;
+  skeletonVisible: boolean = true;
+
   dialogSubscription: Subscription = new Subscription;
   repoList: Array<Repository> = [];
   tableRepoList: Array<Repository> = []; 
