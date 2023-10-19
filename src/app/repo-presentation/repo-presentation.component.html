@@ -1,7 +1,7 @@
-<div class="d-flex gap-3" style="height: 100%;">
+<div class="d-flex" style="height: 100%;">
   <as-split direction="horizontal">
-    <as-split-area [size]="50" class="tui-space_right-1">
-      <tui-island class="p-0">
+    <as-split-area [size]="50">
+      <tui-island class="m-3 p-0">
         <header class="d-flex border-bottom justify-content-between px-0 pb-2">
           <tui-tabs [(activeItemIndex)]="activeOutputFormat" class="tui-space_left-3">
             <button
@@ -26,7 +26,7 @@
             </button>
           </tui-tabs>
     
-          <tui-breadcrumbs [style.color]="'red'" size="l" class="tui-space_top-3">
+          <!-- <tui-breadcrumbs [style.color]="'red'" size="l" class="tui-space_top-3">
             <tui-hosted-dropdown
               *tuiItem
               [content]="breadcrumbContent"
@@ -57,7 +57,7 @@
                 {{ module.name }}
               </a>
             </ng-container>
-          </tui-breadcrumbs>
+          </tui-breadcrumbs> -->
     
           <form class="b-form tui-space_right-3 tui-space_top-3" style="width: 25%" [formGroup]="fileSearchForm">
             <tui-input-tag
@@ -78,6 +78,16 @@
         </header>
         
         <div *ngIf="activeOutputFormat == 0" style="overflow: overlay;">
+          <tui-block-status [card]="true" *ngIf="module.files!.length == 0">
+            <!-- <img
+                alt="not found"
+                src="./assets/images/not-found.svg"
+                tuiSlot="top"
+                class="image"
+            /> -->
+            <h4>Репозиторий пуст</h4>
+            Для загрузки обработки или отчета, нажмите кнопку "Сделать коммит"
+          </tui-block-status>
           <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
             <tui-accordion-item [showArrow]="false" size="s" (dblclick)="moveToParentDirectory()" *ngIf="this.modulesTree.length > 1">
               <div class="d-flex align-items-center justify-content-between">
@@ -202,14 +212,43 @@
             [tuiTreeController]="true"
             [value]="item"
             [content]="content"
-            [childrenHandler]="handler">
+            [childrenHandler]="handler"
+            class="tui-space_vertical-2 tui-space_horizontal-2">
           </tui-tree>
         </div>
         
         <ng-template #content let-item>
-          {{ item.name }}
+          <div (click)="openTreeNode(item)" class="d-flex flex-grow-1 justify-content-between">
+            <div style="border-bottom: 1px solid rgba(27, 31, 59, .4);">
+              <b>{{ item.name }}</b>
+            </div>
+            <div *ngIf="!item.files">
+              <button
+                tuiIconButton
+                appearance="secondary-destructive"
+                size="xs"
+                type="button"
+                shape="rounded"
+                icon="tuiIconLock"
+                *ngIf="item.locked"
+                [class.tui-skeleton]="skeletonVisible"
+                (click)="unlockFile($event, item)">
+              </button>
+              <button
+                tuiIconButton
+                appearance="secondary"
+                size="xs"
+                type="button"
+                shape="rounded"
+                icon="tuiIconUnlock"
+                *ngIf="!item.locked"
+                [class.tui-skeleton]="skeletonVisible"
+                (click)="lockFile($event, item)">
+              </button>      
+            </div>
+          </div>      
         </ng-template>
-      </tui-island>  
+      </tui-island>
     </as-split-area>
     <as-split-area [size]="50" class="tui-space_left-1">
       <tui-island class="p-0">
@@ -257,12 +296,22 @@
         </header>
         
         <div style="overflow: overlay;">
-          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false">
+          <tui-block-status [card]="true" *ngIf="commitsList.length == 0">
+            <!-- <img
+                alt="not found"
+                src="./assets/images/not-found.svg"
+                tuiSlot="top"
+                class="image"
+            /> -->
+            <h4>Этот список пуст ;-(</h4>
+            Выберите файл, чтобы увидеть его список коммитов
+          </tui-block-status>
+          <tui-accordion class="container-fluid px-0 pb-4" [rounded]="false" *ngIf="commitsList.length > 0">
             <tui-accordion-item *ngFor="let commit of commitsList" [showArrow]="false" size="s" (click)="currentCommit = commit">
               <div class="d-flex align-items-center justify-content-between">
                 <div class="tui-space_right-3" style="width: 30%; overflow: hidden;">
                   <b [class.tui-skeleton]="skeletonCommitVisible">{{ commit.message }}</b>
-                  <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1" [class.tui-skeleton]="skeletonCommitVisible"></tui-tag>
+                  <tui-tag *ngFor="let tag of commit.tags" status="custom" [autoColor]="true" size="m" [value]="tag" [hoverable]="true" class="tui-space_left-1" [class.tui-skeleton]="skeletonCommitVisible"></tui-tag>
                 </div>
                 <div class="tui-space_right-3" [class.tui-skeleton]="skeletonCommitVisible">
                   {{ commit.when.toLocaleString("ru-RU", {timeZone: "Asia/Yekaterinburg"}) }}

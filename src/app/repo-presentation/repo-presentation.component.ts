@@ -1,23 +1,35 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { RepoRequestService } from '../repo-request.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Module } from '../Module';
 import { EMPTY_ARRAY, TuiHandler } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiDialogService, TuiNotification, TuiDialogContext, TuiDialogSize } from '@taiga-ui/core';
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CommitShort } from '../CommitShort';
 import { Commit } from '../Commit';
 import { TUI_PROMPT, TuiPromptData } from '@taiga-ui/kit';
 import { Subscription, Observable, of, Subject, timer } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 import { TuiFileLike } from '@taiga-ui/kit';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { TUI_TREE_CONTENT } from '@taiga-ui/kit';
+import { FoldersComponent } from './folders/folders.component';
+
+// interface TreeNode {
+//   readonly children: readonly TreeNode[];
+//   readonly text: string;
+// }
 
 @Component({
   selector: 'app-repo-presentation',
   templateUrl: './repo-presentation.component.html',
-  styleUrls: ['./repo-presentation.component.scss'],
+  styleUrls: ['./repo-presentation.component.less'],
+  providers: [
+    {
+      provide: TUI_TREE_CONTENT,
+      useValue: new PolymorpheusComponent(FoldersComponent),
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepoPresentationComponent {
@@ -116,6 +128,14 @@ export class RepoPresentationComponent {
   }
 
   openAccordionItem(module: Module) {
+    this.currentPath = [module.name];
+    if(module.type == 'file') {
+      this.currentModule = module;
+      this.showCommits();
+    }
+  }
+
+  openTreeNode(module: Module) {
     this.currentPath = [module.name];
     if(module.type == 'file') {
       this.currentModule = module;
