@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-repo-edit',
   templateUrl: './repo-edit.component.html',
-  styleUrls: ['./repo-edit.component.scss'],
+  styleUrls: ['./repo-edit.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepoEditComponent {

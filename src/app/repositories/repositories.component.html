@@ -1,4 +1,4 @@
-<tui-island class="p-0">
+<tui-island class="tui-island-shadow m-3 p-0">
   <header class="d-flex border-bottom justify-content-between px-4 pb-2">
     <div class="d-flex">
       <tui-tabs [(activeItemIndex)]="activeAccessLevelTab" (activeItemIndexChange)="onAccessLevelTabChange()">
@@ -86,7 +86,7 @@
                 *ngIf="!repo.isPublic"
               ></tui-svg>
               <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
-              <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+              <tui-tag *ngFor="let tag of repo.tags" status="custom"  [hoverable]="true" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
             </div>
             <a tuiLink [routerLink]="'/profile/' + repo.creator.id" style="font-size: 18px;" class="d-flex align-items-center">
               <tui-avatar
@@ -143,7 +143,7 @@
             <a class="tui-island__title me-1" href="#" [routerLink]="['/repositories/', repo.id]">{{ repo.name }}</a>
             
             <tui-items-with-more>
-              <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" class="tui-space_left-1"></tui-tag>
+              <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" [hoverable]="true" class="tui-space_left-1"></tui-tag>
               <ng-template
                 tuiMore
                 let-index

@@ -8,7 +8,7 @@ import { Repository } from '../Repository';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.less']
 })
 export class ProfileComponent {
 

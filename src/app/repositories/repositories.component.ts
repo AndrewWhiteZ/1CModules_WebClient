@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-repositories',
   templateUrl: './repositories.component.html',
-  styleUrls: ['./repositories.component.scss'],
+  styleUrls: ['./repositories.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RepositoriesComponent {

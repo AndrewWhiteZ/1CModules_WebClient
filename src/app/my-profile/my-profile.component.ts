@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
-  styleUrls: ['./my-profile.component.scss'],
+  styleUrls: ['./my-profile.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProfileComponent {
