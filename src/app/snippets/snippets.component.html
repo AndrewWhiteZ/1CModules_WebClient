@@ -1,1 +1,121 @@
-<p>snippets works!</p>
+<div class="d-flex" style="height: 100%;">
+  <as-split direction="horizontal">
+    <as-split-area [size]="50">
+      <tui-island class="m-3 p-0">
+        <div
+          tuiGroup
+          class="group">
+          <div>
+            <tui-input
+              (click)="chooseRepoDialog(chooseRepoDialogContent, 'l')"
+              tuiHintContent="Выберите репозиторий, в котором находится искомый файл"
+              class="tui-group__inherit-item"
+            >
+              Репозиторий
+              <input tuiTextfield/>
+            </tui-input>
+          </div>
+          <div>
+            <tui-multi-select
+              tuiHintContent="Выберите файл, код которого хотите посмотреть"
+              class="tui-group__inherit-item"
+              [editable]="false"
+              [expandable]="false"
+              [tuiTextfieldLabelOutside]="true">
+              Файл
+              <tui-data-list-wrapper
+                *tuiDataList
+                tuiMultiSelectGroup>
+              </tui-data-list-wrapper>
+            </tui-multi-select>
+          </div>
+          <div>
+            <tui-input
+              tuiHintContent="Выберите интересующую вас версию файла"
+              class="tui-group__inherit-item"
+            >
+              Коммит
+              <input tuiTextfield/>
+            </tui-input>
+          </div>
+        </div>
+
+      </tui-island>
+    </as-split-area>
+    <as-split-area [size]="50">
+      <tui-island class="m-3 p-0">
+        <header class="d-flex border-bottom justify-content-between px-0 pb-2">
+          <tui-tabs [(activeItemIndex)]="activeOutputFormat"
+            class="tui-space_left-3">
+            <button
+              tuiTab
+              class="px-2">
+              <tui-svg
+                src="tuiIconListLarge"
+                class="tui-space_right-2"></tui-svg>
+              Список
+            </button>
+            <button
+              tuiTab
+              class="px-2">
+              <tui-svg
+                src="tuiIconGitPullRequestLarge"
+                class="tui-space_right-2"></tui-svg>
+              Дерево
+            </button>
+          </tui-tabs>
+        </header>
+      </tui-island>
+    </as-split-area>
+  </as-split>
+</div>
+
+<ng-template #chooseRepoDialogContent>
+  <h3 class="tui-space_bottom-3">Выбор репозитория</h3>
+  <tui-accordion>
+    <tui-accordion-item *ngFor="let repo of repoList; let i = index" size="s">
+      <div class="d-flex">
+        <!-- <tui-svg
+          [src]="repo.isPublic ? 'tuiIconGlobe' : 'tuiIconEyeOff'"
+        ></tui-svg> -->
+        <span (click)="consoleLog(repo.name)">{{ repo.name }}</span>
+        <!-- <tui-items-with-more>
+          <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" [hoverable]="true" class="tui-space_left-1"></tui-tag>
+          <ng-template
+            tuiMore
+            let-index
+          >
+            and {{ repo.tags.length - index - 1 }} more
+          </ng-template>
+        </tui-items-with-more> -->
+      </div>
+      <!-- <div class="tui-island__paragraph">
+        {{ repo.description }}
+      </div> -->
+    </tui-accordion-item>
+  </tui-accordion>
+
+  <!-- <div class="col" *ngFor="let repo of repoList; let i = index">
+    <tui-island class="d-flex flex-column justify-content-between">
+      <div class="d-flex">
+        <tui-svg
+          [src]="repo.isPublic ? 'tuiIconGlobe' : 'tuiIconEyeOff'"
+          class="tui-space_right-1"
+        ></tui-svg>
+        <a class="tui-island__title me-1" (click)="consoleLog(repo.name)">{{ repo.name }}</a>
+        <tui-items-with-more>
+          <tui-tag *ngFor="let tag of repo.tags" status="custom" [autoColor]="true" size="m" [value]="tag" [hoverable]="true" class="tui-space_left-1"></tui-tag>
+          <ng-template
+            tuiMore
+            let-index
+          >
+            and {{ repo.tags.length - index - 1 }} more
+          </ng-template>
+        </tui-items-with-more>
+      </div>
+      <div class="tui-island__paragraph">
+        {{ repo.description }}
+      </div>
+    </tui-island>
+  </div> -->
+</ng-template>

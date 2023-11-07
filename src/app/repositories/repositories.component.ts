@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, Inject, OnInit } from '@angular/core';
 import { RepoRequestService } from '../repo-request.service';
 import { TransferDataService } from '../transfer-data.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./repositories.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RepositoriesComponent {
+export class RepositoriesComponent implements OnInit {
 
   radius: number = 15;
   skeletonVisible: boolean = true;
@@ -43,7 +43,7 @@ export class RepositoriesComponent {
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,) {
   }
   
-  ngOnInit() {
+  ngOnInit(): void {
     this.showAvailablePrivateRepositories();
   }
 

@@ -179,70 +179,8 @@
             </button>
           </div>
         </tui-island>
-        <!-- <tui-island>
-          <div class="card-body">
-            <div class="d-flex">
-              <i class="fas fa-globe pt-1 me-2" *ngIf="repo.isPublic"></i>
-              <i class="fas fa-eye-slash pt-1 me-2" *ngIf="!repo.isPublic"></i>
-              <h5 class="card-title">{{ repo.name }}</h5>
-            </div>
-            <h5><span class="badge badge-success rounded-pill d-inline ms-1" *ngFor="let tag of repo.tags">{{ tag }}</span></h5>
-            {{ repo.description }}
-          </div>
-          <div class="d-flex align-items-center justify-content-center card-footer" style="background-color: rgba(0, 0, 0, 0.05);">
-            <button type="button" class="btn btn-primary btn-floating me-2" mdbRipple rippleColor="dark" [routerLink]="['/repositories/', repo.id]">
-              <i class="fas fa-external-link-alt"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-              <i class="fas fa-info"></i>
-            </button>
-          </div>
-        </tui-island> -->
       </div>
     </div>
-
-    <!-- <table class="table table-hover align-middle mb-0 bg-white table-sm" *ngIf="activeFormatTab == 2">
-      <thead class="bg-light">
-        <tr class="table-secondary">
-          <th scope="col">№</th>
-          <th scope="col">Название</th>
-          <th scope="col">Метки</th>
-          <th scope="col">Создатель</th>
-          <th scope="col">Приватность</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="" *ngFor="let repo of repoList; let i = index">
-          <th scope="row">{{ i }}</th>
-          <td>{{ repo.name }}</td>
-          <td>
-              <h5><span class="badge badge-success rounded-pill d-inline" *ngFor="let tag of repo.tags">{{ tag }}</span></h5>
-          </td>
-          <td>{{ repo.creator.fullName }}</td>
-          <td *ngIf="repo.isPublic">
-              <i class="fas fa-globe"></i>
-          </td>
-          <td *ngIf="!repo.isPublic">
-              <i class="fas fa-eye-slash"></i>
-          </td>
-          <td>
-              <button type="button" class="btn btn-primary btn-floating me-2" mdbRipple rippleColor="dark" [routerLink]="['/repositories/', repo.id]">
-                  <i class="fas fa-external-link-alt"></i>
-              </button>
-              <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-                  <i class="fas fa-edit"></i>
-              </button>
-              <button type="button" class="btn btn-secondary btn-floating me-2" mdbRipple rippleColor="dark">
-                  <i class="fas fa-info"></i>
-              </button>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
 
     <table
       tuiTable
